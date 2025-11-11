@@ -16,5 +16,26 @@ public class Propietario {
     @Getter
     private double saldoMinimo;
     @Getter
-    private String estado;//enum
+    private EstadoPropietario estado;//enum
+
+    public Propietario(long cedula, String nombreC, double saldoA, double saldoMinimo) {
+        this.cedula = cedula;
+        this.nombreCompleto = nombreC;
+        this.saldoActual = saldoA;
+        this.saldoMinimo = saldoMinimo;
+        this.estado = new EstadoHabilitado(); 
+    }
+    public boolean puedeIngresar() { return estado.puedeIngresar(); }
+    public boolean puedeTransitar() { return estado.puedeTransitar(); }
+    public boolean recibeNotificaciones() { return estado.recibeNotificaciones(); }
+    public boolean aplicaBonificaciones() { return estado.aplicaBonificaciones(); }
+
+    // Cambiar el estado dinámicamente
+    public void cambiarEstado(EstadoPropietario nuevoEstado) {
+        this.estado = nuevoEstado;
+    }
+
+    public String getEstadoNombre() {
+        return estado.nombreEstado();
+    }
 }

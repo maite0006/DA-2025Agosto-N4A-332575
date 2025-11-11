@@ -1,7 +1,9 @@
 package uy.ort.disaps.obligatorio.servicios.fachada;
 
+import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.Transito;
+import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
 import uy.ort.disaps.obligatorio.servicios.ServicioBonificaciones;
 import uy.ort.disaps.obligatorio.servicios.ServicioTransitos;
 import uy.ort.disaps.obligatorio.servicios.ServicioUsuarios;
@@ -44,7 +46,14 @@ public class fachada {
     public void agregarBonificacion(uy.ort.disaps.obligatorio.dominio.Bonificacion bonificacion) {
         sBonificaciones.agregarBonificacion(bonificacion);
     }
-   
+    public Propietario LoginPropietario(Long cedula, String contrasenia) throws PeajeExcepcion {
+      return sUsuarios.LoginPropietario(cedula, contrasenia);
+       
+    }
+    public Administrador LoginAdministrador(Long cedula, String contrasenia) throws PeajeExcepcion {
+        return sUsuarios.LoginAdministrador(cedula, contrasenia);
+         
+      }
 
 
 }
