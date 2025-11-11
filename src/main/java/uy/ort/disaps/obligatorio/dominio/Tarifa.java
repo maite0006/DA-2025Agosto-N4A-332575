@@ -5,4 +5,5 @@ public class Tarifa {
     private double monto;
     @Getter
     private Categoria categoria;
+    
 }

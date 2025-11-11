@@ -7,4 +7,10 @@ public class Administrador {
     private String contrasenia;
     @Getter
     private Long cedula;
+
+    public Administrador(String nombreCompleto, String contrasenia, Long cedula) {
+        this.nombreCompleto = nombreCompleto;
+        this.contrasenia = contrasenia;
+        this.cedula = cedula;
+    }
 }

@@ -1,6 +1,9 @@
 package uy.ort.disaps.obligatorio.dominio;
 import lombok.Getter;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
+
 public class Vehiculo {
     
     @Getter
@@ -12,5 +15,5 @@ public class Vehiculo {
     @Getter
     private Categoria categoria;
     @Getter
-    private List<Transito> transitos;
+    private Propietario propietario;
 }

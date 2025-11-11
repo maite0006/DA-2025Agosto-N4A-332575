@@ -17,8 +17,4 @@ public class Propietario {
     private double saldoMinimo;
     @Getter
     private String estado;//enum
-    @Getter
-    private List<Vehiculo> vehiculos;
-    @Getter
-    private List<AsignacionBonificacion> BonificacionesAsignadas;
 }
