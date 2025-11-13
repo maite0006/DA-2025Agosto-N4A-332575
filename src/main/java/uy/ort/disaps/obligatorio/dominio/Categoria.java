@@ -3,4 +3,8 @@ import lombok.Getter;
 public class Categoria {
     @Getter
     private String nombre;//enum?
+
+    public Categoria(String nom){
+        this.nombre=nom;
+    }
 }

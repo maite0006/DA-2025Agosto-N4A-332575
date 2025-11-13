@@ -1,14 +1,20 @@
 package uy.ort.disaps.obligatorio.servicios.fachada;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import uy.ort.disaps.obligatorio.DTOs.PuestoDTO;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
+import uy.ort.disaps.obligatorio.dominio.Puesto;
 import uy.ort.disaps.obligatorio.dominio.Transito;
 import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
+import uy.ort.disaps.obligatorio.observador.Observable;
 import uy.ort.disaps.obligatorio.servicios.ServicioBonificaciones;
 import uy.ort.disaps.obligatorio.servicios.ServicioTransitos;
 import uy.ort.disaps.obligatorio.servicios.ServicioUsuarios;
 
-public class fachada {
+public class fachada extends Observable {
     private static fachada instancia;
     private ServicioUsuarios sUsuarios;
     private ServicioBonificaciones sBonificaciones;
@@ -25,6 +31,7 @@ public class fachada {
         }
         return instancia;
     }
+
     public void agregar(Propietario usuario) {
         sUsuarios.agregar(usuario);
     }
@@ -33,6 +40,9 @@ public class fachada {
     }
     public void agregarPuesto(uy.ort.disaps.obligatorio.dominio.Puesto puesto) {
         sTransitos.agregarPuesto(puesto);
+    }
+    public List<Puesto> obtenerPuestos(){
+        return sTransitos.getPuestos();
     }
     public void agregarCategoria(uy.ort.disaps.obligatorio.dominio.Categoria categoria) {
         sTransitos.agregarCategoria(categoria);
@@ -46,14 +56,20 @@ public class fachada {
     public void agregarBonificacion(uy.ort.disaps.obligatorio.dominio.Bonificacion bonificacion) {
         sBonificaciones.agregarBonificacion(bonificacion);
     }
-    public Propietario LoginPropietario(Long cedula, String contrasenia) throws PeajeExcepcion {
+    public Propietario LoginPropietario(int cedula, String contrasenia) throws PeajeExcepcion {
       return sUsuarios.LoginPropietario(cedula, contrasenia);
        
     }
-    public Administrador LoginAdministrador(Long cedula, String contrasenia) throws PeajeExcepcion {
+    public Administrador LoginAdministrador(int cedula, String contrasenia) throws PeajeExcepcion {
         return sUsuarios.LoginAdministrador(cedula, contrasenia);
          
       }
-
+    public void EliminarSesion(Administrador usuario) {
+        sUsuarios.EliminarSesion(usuario);
+    }
+    public List<PuestoDTO> puestosDTOs(){
+        return  sTransitos.getPuestosDTOs();
+    }
+    
 
 }

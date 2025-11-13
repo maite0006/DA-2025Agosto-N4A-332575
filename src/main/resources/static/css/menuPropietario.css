@@ -1,0 +1,117 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-color: #f5f7fb;
+  color: #222;
+}
+
+/* Top bar */
+.topbar {
+  background-color: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.topbar h1 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #1b3b6f;
+}
+.topbar a {
+  color: #6a1b9a;
+  text-decoration: none;
+  font-weight: 600;
+}
+.topbar a:hover { text-decoration: underline; }
+
+/* Main layout */
+.dashboard {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Generic card */
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  padding: 20px;
+}
+.card h2 {
+  margin-top: 0;
+  color: #1b3b6f;
+  font-size: 1.15rem;
+  border-bottom: 1px solid #e6e8ee;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+/* Grid resumen */
+.resumen-grid {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.campo {
+  flex: 1;
+  min-width: 200px;
+}
+.campo label {
+  color: #555;
+  font-size: 0.9rem;
+}
+.campo p {
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+/* Two-column cards */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+thead tr {
+  background-color: #f1f3f7;
+}
+th, td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e8ec;
+}
+tbody tr:hover {
+  background-color: #fafcff;
+}
+
+/* Button */
+.btn-borrar {
+  background-color: #e53935;
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 12px;
+  float: right;
+}
+.btn-borrar:hover {
+  background-color: #c62828;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}

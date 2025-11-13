@@ -22,19 +22,32 @@ public class ControladorLoginAdm {
 
 
     @PostMapping("/login")
-    public List<Respuesta> loginAdministrador(@RequestParam Long cedula, @RequestParam String contrasenia, HttpSession session)  {
+    public List<Respuesta> loginAdministrador(@RequestParam int cedula, @RequestParam String contrasenia, HttpSession session) throws PeajeExcepcion {
         try {
             Administrador adm = fachada.getInstancia().LoginAdministrador(cedula, contrasenia);
             if (adm!=null) {
                 
                 session.setAttribute("Administrador", adm);
-                return Respuesta.lista(new Respuesta( "Login exitoso", "menuPropietario.html"));
+                return Respuesta.lista(new Respuesta( "loginExitoso", "MenuAdministrador.html"));
             }
-            return Respuesta.lista(new Respuesta( "Error", "Administrador no encontrado"));
+            throw new PeajeExcepcion("Administrador no encontrado.");
         }
         catch (PeajeExcepcion e) {
-            return Respuesta.lista(new Respuesta( "Error", e.getMessage()));
+            throw new PeajeExcepcion(e.getMessage());
         }
-    }   
+    } 
+
+    @PostMapping("/logout")
+    public List<Respuesta> logout(HttpSession sesionHttp) {
+        Administrador usuario = (Administrador) sesionHttp.getAttribute("Administrador");
+        if (usuario != null) {
+            sesionHttp.removeAttribute("Administrador");
+            sesionHttp.invalidate();
+            fachada.getInstancia().EliminarSesion(usuario);
+            return Respuesta.lista(new Respuesta("logoutExitoso", "LoginAdm.html"));
+        }
+        return Respuesta.lista(new Respuesta("usuarioNoAutenticado", "LoginAdm.html"));
+    }
 }
+
 

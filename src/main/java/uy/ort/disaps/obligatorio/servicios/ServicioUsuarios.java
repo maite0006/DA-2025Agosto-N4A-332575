@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
+import uy.ort.disaps.obligatorio.dominio.SesionAdm;
 import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
 
 public class ServicioUsuarios {
     private List<Propietario> propietarios;
     private List<Administrador> administradores;
+    private ArrayList<Administrador> admActivos= new ArrayList<>();
     
     public ServicioUsuarios() {
         this.propietarios = new ArrayList<>();
@@ -24,7 +26,7 @@ public class ServicioUsuarios {
     public void agregar(Administrador adm) {
         administradores.add(adm);
     }
-    public Propietario LoginPropietario(Long cedula, String contrasenia) throws PeajeExcepcion {
+    public Propietario LoginPropietario(int cedula, String contrasenia) throws PeajeExcepcion {
         Propietario p = buscarPropietarioPorCedula(cedula);
         if (p == null || !p.getContrasenia().equals(contrasenia)) {
             throw new PeajeExcepcion("Acceso denegado.");
@@ -36,25 +38,33 @@ public class ServicioUsuarios {
 
     }
 
-    public Propietario buscarPropietarioPorCedula(Long cedula) {
-        for (Propietario p : propietarios) {
-            if (p.getCedula().equals(cedula)) return p;
-            
-        }
-        return null;
-    }
-    public Administrador LoginAdministrador(Long cedula, String contrasenia) throws PeajeExcepcion {
+    public Administrador LoginAdministrador(int cedula, String contrasenia) throws PeajeExcepcion {
         Administrador a = buscarAdministradorPorCedula(cedula);
         if (a == null || !a.getContrasenia().equals(contrasenia)) {
             throw new PeajeExcepcion("Acceso denegado.");
         }
+        if (admActivos.contains(a)) {
+            throw new PeajeExcepcion("Ud. Ya está logueado.");
+        }
+        admActivos.add(a);
         return a;
     }
-    public Administrador buscarAdministradorPorCedula(Long cedula) {
+
+    public Administrador buscarAdministradorPorCedula(int cedula) {
         for (Administrador a : administradores) {
-            if (a.getCedula().equals(cedula)) return a;
+            if (a.getCedula()==cedula) return a;
             
         }
         return null;
+    }
+    public Propietario buscarPropietarioPorCedula(int cedula) {
+        for (Propietario p : propietarios) {
+            if (p.getCedula()==cedula) return p;
+            
+        }
+        return null;
+    }
+    public void EliminarSesion(Administrador usuario) {
+        admActivos.remove(usuario);
     }
 }

@@ -5,5 +5,13 @@ public class Tarifa {
     private double monto;
     @Getter
     private Categoria categoria;
+
+    public Tarifa(double monto, Categoria cat){
+        this.monto=monto;
+        this.categoria=cat;
+    }
     
+    public String getCategoria(){
+        return categoria.getNombre();
+    }
 }

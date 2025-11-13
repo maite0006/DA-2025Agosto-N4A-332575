@@ -6,9 +6,9 @@ public class Administrador {
     @Getter
     private String contrasenia;
     @Getter
-    private Long cedula;
+    private int cedula;
 
-    public Administrador(String nombreCompleto, String contrasenia, Long cedula) {
+    public Administrador(int cedula, String contrasenia,String nombreCompleto ) {
         this.nombreCompleto = nombreCompleto;
         this.contrasenia = contrasenia;
         this.cedula = cedula;

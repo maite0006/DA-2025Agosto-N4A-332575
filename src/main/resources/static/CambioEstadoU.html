@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/menuAdministrador.css">
+   <script src="utilesVista.js"></script>
+    <title>Cambio estado</title>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Cambiar estado de propietario</h1>
+  </header>
+
+  <main class="container">
+    <p class="descripcion">
+      Ingrese la cédula de identidad del propietario, revise su estado actual y seleccione un nuevo estado.
+    </p>
+
+    <!-- Contenedor con dos columnas -->
+    <div class="estado-container">
+      <section class="card">
+        <label for="cedula">Cédula de identidad</label>
+        <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
+        <button type="button" class="btn-search">Buscar propietario</button>
+      </section>
+
+      <section class="card">
+        <label for="nuevoEstado">Estados definidos</label>
+        <select id="nuevoEstado" name="nuevoEstado" required>
+          <option value="">Seleccione un estado...</option>
+          <option value="Activo">Activo</option>
+          <option value="Suspendido">Suspendido</option>
+          <option value="Bloqueado">Bloqueado</option>
+        </select>
+        <button type="submit" class="btn-primario">Cambiar estado</button>
+      </section>
+    </div>
+
+    <!-- Información del propietario -->
+    <section class="card info-estado">
+      <h3>Propietario</h3>
+      <p><strong>Nombre:</strong> <span id="nombre"></span></p>
+      <p><strong>Estado actual:</strong> <span id="estadoActual"></span></p>
+    </section>
+  </main>
+
+  <footer>
+    © 2025 — Cambiar estado
+  </footer>
+</body>
+
+</html>

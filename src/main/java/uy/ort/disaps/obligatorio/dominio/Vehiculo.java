@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 public class Vehiculo {
     
     @Getter
-    private long matricula;
+    private String matricula;
     @Getter
     private String modelo;
     @Getter
@@ -16,4 +16,12 @@ public class Vehiculo {
     private Categoria categoria;
     @Getter
     private Propietario propietario;
+
+    public Vehiculo(String matricula, String modelo, String color, Categoria categoria, Propietario  propietario){
+        this.categoria=categoria;
+        this.color=color;
+        this.matricula=matricula;
+        this.modelo=modelo;
+        this.propietario=propietario;
+    }
 }

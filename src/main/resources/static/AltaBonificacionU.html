@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="css/menuAdministrador.css">
+   <script src="utilesVista.js"></script>
+  <title>Alta bonificacion</title>
+</head>
+
+<body>
+  <header class="topbar">
+    <h1>Asignar bonificaciones</h1>
+    
+  </header>
+
+  <main class="container">
+    <p class="descripcion">
+      Seleccione una bonificación, un puesto y un propietario para asignar la bonificación correspondiente.
+    </p>
+
+    <!-- Dos columnas: selección + búsqueda -->
+    <div class="grid-bonificacion">
+      <section class="card">
+        <label for="bonificacion">Bonificaciones definidas</label>
+        <select id="bonificacion" name="bonificacion" required>
+          <option value="">Seleccione una bonificación...</option>
+        </select>
+
+        <label for="puesto">Puestos definidos</label>
+        <select id="puesto" name="puesto" required>
+          <option value="">Seleccione un puesto...</option>
+        </select>
+      </section>
+
+      <section class="card">
+        <label for="cedula">Cédula de identidad</label>
+        <div class="search-group">
+          <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
+          <button type="button" class="btn-search">Buscar propietario</button>
+        </div>
+
+        <div class="propietario-panel">
+          <h3>Propietario</h3>
+          <p><strong>Nombre:</strong> <span id="nombreProp"></span></p>
+          <p><strong>Estado:</strong> <span id="estadoProp"></span></p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Tabla de bonificaciones asignadas -->
+    <section class="card">
+      <h2>Bonificaciones asignadas</h2>
+      <table class="tabla-bonificaciones">
+        <thead>
+          <tr>
+            <th>Bonificación</th>
+            <th>Puesto</th>
+            <th>Fecha asignación</th>
+          </tr>
+        </thead>
+        <tbody id="tablaBonificaciones">
+          <tr><td colspan="3" class="empty">Sin bonificaciones asignadas</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Botón principal -->
+    <div class="asignar-section">
+      <button type="submit" class="btn-primario">Asignar bonificación</button>
+    </div>
+  </main>
+
+  <footer>
+    © 2025 — Asignar bonificaciones
+  </footer>
+</body>
+</html>

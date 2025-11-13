@@ -6,7 +6,7 @@ import lombok.Getter;
 public class Propietario {
    
     @Getter
-    private Long cedula;
+    private int cedula;
     @Getter
     private String contrasenia;
     @Getter
@@ -18,8 +18,9 @@ public class Propietario {
     @Getter
     private EstadoPropietario estado;//enum
 
-    public Propietario(long cedula, String nombreC, double saldoA, double saldoMinimo) {
+    public Propietario(int cedula, String contrasenia,String nombreC, double saldoA, double saldoMinimo) {
         this.cedula = cedula;
+        this.contrasenia = contrasenia;
         this.nombreCompleto = nombreC;
         this.saldoActual = saldoA;
         this.saldoMinimo = saldoMinimo;

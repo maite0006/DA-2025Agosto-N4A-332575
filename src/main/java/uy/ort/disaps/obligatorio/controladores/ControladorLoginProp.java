@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
+import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
 import uy.ort.disaps.obligatorio.servicios.fachada.fachada;
@@ -21,18 +22,30 @@ public class ControladorLoginProp {
 
 
     @PostMapping("/login")
-    public List<Respuesta> loginPropietario(@RequestParam Long cedula, @RequestParam String contrasenia, HttpSession session) {
+    public List<Respuesta> loginPropietario(@RequestParam int cedula, @RequestParam String contrasenia, HttpSession session) throws PeajeExcepcion {
         try {
             Propietario propietario = fachada.getInstancia().LoginPropietario(cedula, contrasenia);
             if (propietario!=null) {
                 
                 session.setAttribute("propietario", propietario);
-                return Respuesta.lista(new Respuesta( "Login exitoso", "menuPropietario.html"));
+                return Respuesta.lista(new Respuesta( "loginExitoso", "MenuPropietario.html"));
             }
-            return Respuesta.lista(new Respuesta( "Error", "Propietario no encontrado"));
+            throw new PeajeExcepcion("Usuario no encontrado.");
         }
         catch (PeajeExcepcion e) {
-            return Respuesta.lista(new Respuesta( "Error", e.getMessage()));
+            throw new PeajeExcepcion(e.getMessage());
         }
     }   
+    
+    @PostMapping("/logout")
+    public List<Respuesta> logout(HttpSession sesionHttp) {
+        Propietario usuario = (Propietario) sesionHttp.getAttribute("propietario");
+        
+        if (usuario != null) {
+            sesionHttp.removeAttribute("propietario");
+            sesionHttp.invalidate();
+            return Respuesta.lista(new Respuesta("logoutExitoso", "LoginProp.html"));
+        }
+        return Respuesta.lista(new Respuesta("usuarioNoAutenticado", "LoginProp.html"));
+    }
 }

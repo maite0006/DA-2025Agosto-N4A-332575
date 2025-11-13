@@ -1,7 +1,10 @@
 package uy.ort.disaps.obligatorio.servicios;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import uy.ort.disaps.obligatorio.DTOs.PuestoDTO;
+import uy.ort.disaps.obligatorio.DTOs.Mappers.PuestoMapper;
 import uy.ort.disaps.obligatorio.dominio.Categoria;
 import uy.ort.disaps.obligatorio.dominio.Puesto;
 import uy.ort.disaps.obligatorio.dominio.Tarifa;
@@ -45,4 +48,10 @@ public class ServicioTransitos {
     public ArrayList<Vehiculo> getVehiculos(){
         return vehiculos;
     }
+
+
+    public List<PuestoDTO> getPuestosDTOs(){
+        return PuestoMapper.fromPuestos(puestos);
+    }
+    
 }   

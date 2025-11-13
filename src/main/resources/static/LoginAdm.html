@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Usuario Propietario</title>
+    <title>Login - Usuario Administrador</title>
     <link rel="stylesheet" href="css/Login.css">
 </head>
 <body>
     <script src="utilesVista.js"></script>
     <div class="login-container">
         <h2>Iniciar Sesión</h2>
-        <form id="formLogin" action="/accesoPropietario/login" method="post" onsubmit="acceder(event);">
+        <form id="formLoginAdm" action="/accesoAdministrador/login" method="post" onsubmit="acceder(event);">
             <div class="form-group">
                 <label for="cedula">Cedula:</label>
                 <input type="text" id="cedula" name="cedula" required>
@@ -26,11 +26,10 @@
      <script src="vistaWeb.js"></script>
 </body>
 
-
 <script>
     function acceder(event) {
         event.preventDefault(); 
-        submit("accesoPropietario/login", serializarFormulario("formLogin"));
+        submit("accesoAdministrador/login", serializarFormulario("formLoginAdm"));
     }
 
     async function mostrar_error(mensaje) {
@@ -44,7 +43,6 @@
     async function excepcionDeAplicacion(text){
             await mostrarMensaje(text);
     }
-
     function procesarErrorSubmit(status, text) {
         console.error("Error en submit:", status, text);
         const mensajeElemento = document.getElementById("mensajeError");

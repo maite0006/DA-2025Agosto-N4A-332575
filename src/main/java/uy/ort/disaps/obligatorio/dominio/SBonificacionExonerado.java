@@ -1,9 +1,14 @@
 package uy.ort.disaps.obligatorio.dominio;
 
+import java.sql.Date;
+
 public class SBonificacionExonerado extends StrategyBonificacion {
+
     @Override
-    public double aplicarBonificacion(Puesto puesto, Propietario propietario, Transito transito) {
-        return 1;
+    public double aplicarBonificacion(Puesto puesto, Propietario propietario, Vehiculo vehiculo, Date fecha) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'aplicarBonificacion'");
     }
+   
     
 }
