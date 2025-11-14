@@ -173,6 +173,19 @@ th {
   padding: 15px;
 }
 
+.mensaje-error {
+  background-color: #ff6868;
+  color: white;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.oculto {
+  display: none;
+}
+
 /* =========================
    ASIGNAR BONIFICACIÓN
 ========================= */

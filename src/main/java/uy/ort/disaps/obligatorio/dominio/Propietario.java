@@ -39,4 +39,14 @@ public class Propietario {
     public String getEstadoNombre() {
         return estado.nombreEstado();
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Propietario)) return false;
+        Propietario p = (Propietario) o;
+        return cedula == p.cedula;
+    }
+    public int hashCode() {
+         return Integer.hashCode(cedula);
+    }
 }

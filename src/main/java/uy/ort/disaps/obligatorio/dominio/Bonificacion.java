@@ -1,6 +1,6 @@
 package uy.ort.disaps.obligatorio.dominio;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class Bonificacion {
     public String nombre;
@@ -13,7 +13,7 @@ public class Bonificacion {
         this.exonerado=puestoExonerado;
     }
 
-    public double aplicar(Propietario propietario, Vehiculo vehiculo, Puesto puesto, Date fecha) {
-        return strategyBonificacion.aplicarBonificacion(puesto, propietario, vehiculo, fecha);
+    public double aplicar(Date fecha, boolean frecuenta, double montoO) {
+        return strategyBonificacion.aplicarBonificacion(montoO, fecha, frecuenta);
     }
 }

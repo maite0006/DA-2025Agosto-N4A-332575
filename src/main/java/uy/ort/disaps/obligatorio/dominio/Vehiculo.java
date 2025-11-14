@@ -24,4 +24,16 @@ public class Vehiculo {
         this.modelo=modelo;
         this.propietario=propietario;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vehiculo)) return false;
+        Vehiculo v = (Vehiculo) o;
+        return matricula.equalsIgnoreCase(v.matricula);
+    }
+    @Override
+    public int hashCode() {
+        return matricula.toUpperCase().hashCode();
+    }
+
 }

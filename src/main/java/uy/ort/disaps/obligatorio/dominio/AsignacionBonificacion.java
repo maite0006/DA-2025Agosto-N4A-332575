@@ -1,5 +1,5 @@
 package uy.ort.disaps.obligatorio.dominio;
-import java.sql.Date;
+import java.util.Date;
 
 import lombok.Getter;
 public class AsignacionBonificacion {

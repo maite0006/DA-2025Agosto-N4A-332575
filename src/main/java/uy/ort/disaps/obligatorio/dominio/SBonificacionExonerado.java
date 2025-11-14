@@ -1,13 +1,12 @@
 package uy.ort.disaps.obligatorio.dominio;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class SBonificacionExonerado extends StrategyBonificacion {
 
     @Override
-    public double aplicarBonificacion(Puesto puesto, Propietario propietario, Vehiculo vehiculo, Date fecha) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'aplicarBonificacion'");
+    public double aplicarBonificacion(double montoO,  Date fecha, boolean frecuento) {
+        return 0;
     }
    
     

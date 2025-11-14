@@ -17,6 +17,17 @@ public class Puesto {
     public void agregarTarifa(Tarifa t) {
         this.tarifas.add(t);
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Puesto)) return false;
+        Puesto p = (Puesto) o;
+        return nombre.equalsIgnoreCase(p.nombre);
+    }
+    @Override
+    public int hashCode() {
+        return nombre.toUpperCase().hashCode();
+    }
 }
 
 
