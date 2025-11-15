@@ -49,4 +49,25 @@ public class Propietario {
     public int hashCode() {
          return Integer.hashCode(cedula);
     }
+
+    public enum ResultadoCobro {
+        SALDO_INSUFICIENTE,
+        COBRO_OK,
+        COBRO_OK_SALDO_MINIMO
+    }
+    
+    public ResultadoCobro cobrarTransito(double monto) {
+
+        if (saldoActual < monto) {
+            return ResultadoCobro.SALDO_INSUFICIENTE;
+        }
+
+        saldoActual -= monto;
+
+        if (saldoActual <= saldoMinimo) {
+            return ResultadoCobro.COBRO_OK_SALDO_MINIMO;
+        }
+
+        return ResultadoCobro.COBRO_OK;
+    }
 }

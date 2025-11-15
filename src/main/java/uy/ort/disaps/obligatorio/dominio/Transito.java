@@ -9,5 +9,14 @@ public class Transito {
     private Vehiculo vehiculo;
     @Getter
     private Puesto puesto;
+    @Getter
+    private double total;
+
+    public Transito(Date f, Vehiculo v, Puesto p, double total){
+        fecha=f;
+        vehiculo=v;
+        puesto=p;
+        this.total=total;
+    }
    
 }

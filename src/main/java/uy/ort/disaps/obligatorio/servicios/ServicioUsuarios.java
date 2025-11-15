@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
+import uy.ort.disaps.obligatorio.DTOs.PropietarioDto;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.SesionAdm;
@@ -66,5 +67,8 @@ public class ServicioUsuarios {
     }
     public void EliminarSesion(Administrador usuario) {
         admActivos.remove(usuario);
+    }
+    public PropietarioDto nuevoDTOProp(String nombre, String estado, double saldo){
+        return new PropietarioDto(nombre, estado, String.valueOf(saldo));
     }
 }

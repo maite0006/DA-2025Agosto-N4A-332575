@@ -62,11 +62,11 @@
     <section class="card resultado">
       <h2>Resultado</h2>
       <div id="resultadoTransito">
-        <p><strong>Propietario:</strong> Juan Pérez (Activo)</p>
-        <p><strong>Categoría:</strong> A (Auto)</p>
-        <p><strong>Bonificación:</strong> Residente Costa de Oro (10%)</p>
-        <p><strong>Costo del tránsito:</strong> $ 120.00</p>
-        <p><strong>Saldo luego del tránsito:</strong> $ 1400.75</p>
+        <p><strong>Propietario:</strong> </p>
+        <p><strong>Categoría:</strong>  </p>
+        <p><strong>Bonificación:</strong> </p>
+        <p><strong>Costo del tránsito:</strong> </p>
+        <p><strong>Saldo luego del tránsito:</strong> </p>
       </div>
     </section>
 
@@ -133,16 +133,26 @@
       event.preventDefault();
       limpiar_error(); 
       
-      submit("/emularTrasito/emular", serializarFormulario("formBuscar"));
+      submit("/emularTransito/emular", serializarFormulario("formTransito"));
     }
     function mostrar_error(mensaje) {
-      const div = document.getElementById("errorLocal");
+      const div = document.getElementById("errorMsg");
       div.textContent = mensaje;
       div.classList.remove("oculto");
     }
+    function mostrar_resultadoTransito(dto) {
+      const div = document.getElementById("resultadoTransito");
+      div.innerHTML = `
+          <p><strong>Propietario:</strong> ${dto.propietario}(${dto.estadoP})</p>
+          <p><strong>Categoría:</strong> ${dto.categoria}</p>
+          <p><strong>Bonificación:</strong> ${dto.bonificacion}</p>
+          <p><strong>Costo del tránsito:</strong> ${dto.costo}</p>
+          <p><strong>Saldo luego del tránsito:</strong> ${dto.saldo}</p>
+      `;
+    }
 
     function limpiar_error() {
-        const div = document.getElementById("errorLocal");
+        const div = document.getElementById("errorMsg");
         div.textContent = "";
         div.classList.add("oculto");
     }

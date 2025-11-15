@@ -2,7 +2,10 @@ package uy.ort.disaps.obligatorio.dominio;
 
 import java.util.Date;
 
+import lombok.Getter;
+
 public class Bonificacion {
+    @Getter
     public String nombre;
     public StrategyBonificacion strategyBonificacion;
     public Puesto exonerado;

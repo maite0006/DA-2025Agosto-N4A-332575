@@ -56,8 +56,7 @@
             <tr><th>Matrícula</th><th>Modelo</th><th>Color</th><th>Tránsitos</th><th>Monto total</th></tr>
           </thead>
           <tbody id="tablaVehiculos">
-            <tr><td>SAB1234</td><td>Sedán</td><td>Azul</td><td>12</td><td>$ 1.240,00</td></tr>
-            <tr><td>SCD5678</td><td>SUV</td><td>Gris</td><td>8</td><td>$ 980,00</td></tr>
+          
           </tbody>
         </table>
       </section>
@@ -76,9 +75,8 @@
           </tr>
         </thead>
         <tbody id="tablaTransitos">
-          <tr><td>Peaje Sur</td><td>SAB1234</td><td>Motocicleta</td>
-              <td>$ 120,00</td><td>Frecuente</td><td>- $ 24,00</td>
-              <td>$ 96,00</td><td>2025-09-19</td><td>18:45</td></tr>
+          
+              
         </tbody>
       </table>
     </section>
@@ -89,15 +87,14 @@
       <table>
         <thead><tr><th>Mensaje</th><th>Fecha</th></tr></thead>
         <tbody id="tablaNotificaciones">
-          <tr><td>Su bonificación “Frecuente” fue renovada.</td><td>2025-09-21</td></tr>
+          
         </tbody>
       </table>
       <button class="btn-borrar" onclick="borrarNotificaciones()">Borrar notificaciones</button>
     </section>
   </main>
   <script src="utilesVista.js"></script>
- <script src="vistaWeb.js"></script>
-</body>
+  <script src="vistaWeb.js"></script>
   <script>
     urlIniciarVista="/menuProp/vistaConectada";
 	urlRegistroSSE = "/menuProp/registrarSSE"; 
@@ -108,17 +105,64 @@
         window.location.href = urlDestino;
     }
 
-    function mostrar_usuarioNoAutenticado(urlDestino) {
-        window.location.href = urlDestino;
+    function mostrar_propietario(p) {
+        document.getElementById("nombrePropietario").innerHTML=p.nombre;
+        document.getElementById("estadoPropietario").innerHTML=p.estado;
+       document.getElementById("saldoPropietario").innerHTML=p.saldoA;
+
     }
-    function mostrar_Estado(estado){
-        document.getElementById("estadoPropietario").innerHTML=estado;
+    function mostrar_notificaciones(notificaciones) {
+      const tbody = document.getElementById("tablaNotificaciones");
+      tbody.innerHTML = '';
+      notificaciones.forEach(noti => {
+          const fecha = new Date(noti.fechaHora);
+          const fechaStr = fecha.toLocaleString();
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${noti.mensaje}</td><td>${fechaStr}</td>`;
+          tbody.appendChild(tr);
+      });
     }
-    function mostrar_NombreUsuario(nombreUsuario){
-        document.getElementById("nombrePropietario").innerHTML=nombreUsuario
+    function mostrar_vehiculos(vehiculos) {
+      const tbody = document.getElementById("tablaVehiculos");
+      tbody.innerHTML = '';
+
+      vehiculos.forEach(v => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${v.matricula}</td>
+              <td>${v.modelo}</td>
+              <td>${v.color}</td>
+              <td>${v.transitos}</td>
+              <td>${v.totalT}</td>
+          `;
+          tbody.appendChild(tr);
+      });
     }
-    function mostrar_SaldoActual(saldoActual){
-         document.getElementById("saldoPropietario").innerHTML=saldoActual;
+    
+    function mostrar_transitos(transitos) {
+        const tbody = document.getElementById("tablaTransitos");
+        tbody.innerHTML = '';
+
+        transitos.forEach(t => {
+            const { fecha, hora } = separarFechaHora(t.fechaHora);
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+            <td>${t.puesto}</td>
+            <td>${t.matricula}</td>
+            <td>${t.categoria}</td>
+            <td>${t.tarifa}</td>
+            <td>${t.bonificacion}</td>
+            <td>${t.descuento}</td>
+            <td>${t.total}</td>
+            <td>${fecha}</td>
+            <td>${hora}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+    function separarFechaHora(fechaStr) {
+        const [fecha, hora] = fechaStr.split("T");
+        return { fecha, hora };
     }
     const evtSource = new EventSource(urlRegistroSSE);
 
@@ -139,4 +183,7 @@
     }
 
   </script>
+  
+</body>
+
 </html>
