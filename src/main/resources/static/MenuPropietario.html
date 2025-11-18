@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Tablero de control del propietario</title>
   <link rel="stylesheet" href="css/menuPropietario.css">
-  
+  <script src="sse.js"></script>
 </head>
 
 <body>
@@ -43,8 +43,7 @@
             <tr><th>Bonificación</th><th>Puesto</th><th>Fecha asignada</th></tr>
           </thead>
           <tbody id="tablaBonificaciones">
-            <tr><td>Frecuente</td><td>Peaje Norte</td><td>2025-01-10</td></tr>
-            <tr><td>Trabajador</td><td>Peaje Centro</td><td>2025-03-02</td></tr>
+           
           </tbody>
         </table>
       </section>
@@ -93,11 +92,10 @@
       <button class="btn-borrar" onclick="borrarNotificaciones()">Borrar notificaciones</button>
     </section>
   </main>
-  <script src="utilesVista.js"></script>
-  <script src="vistaWeb.js"></script>
+  
   <script>
-    urlIniciarVista="/menuProp/vistaConectada";
-	urlRegistroSSE = "/menuProp/registrarSSE"; 
+    urlIniciarVista="/menuprop/vistaConectada";
+    urlRegistroSSE = "/menuprop/registrarSSE"; 
     function logout() { submit('/accesoPropietario/logout', '', 'POST'); }
     function borrarNotificaciones() { /* lógica SSE o servicio */ }
     
@@ -108,36 +106,36 @@
     function mostrar_propietario(p) {
         document.getElementById("nombrePropietario").innerHTML=p.nombre;
         document.getElementById("estadoPropietario").innerHTML=p.estado;
-       document.getElementById("saldoPropietario").innerHTML=p.saldoA;
-
-    }
-    function mostrar_notificaciones(notificaciones) {
-      const tbody = document.getElementById("tablaNotificaciones");
-      tbody.innerHTML = '';
-      notificaciones.forEach(noti => {
+        document.getElementById("saldoPropietario").innerHTML=p.saldoA;
+        
+      }
+      function mostrar_notificaciones(notificaciones) {
+        const tbody = document.getElementById("tablaNotificaciones");
+        tbody.innerHTML = '';
+        notificaciones.forEach(noti => {
           const fecha = new Date(noti.fechaHora);
           const fechaStr = fecha.toLocaleString();
           const tr = document.createElement('tr');
           tr.innerHTML = `<td>${noti.mensaje}</td><td>${fechaStr}</td>`;
           tbody.appendChild(tr);
-      });
-    }
-    function mostrar_vehiculos(vehiculos) {
-      const tbody = document.getElementById("tablaVehiculos");
-      tbody.innerHTML = '';
+        });
+      }
+      function mostrar_vehiculos(vehiculos) {
+            const tbody = document.getElementById("tablaVehiculos");
+          tbody.innerHTML = '';
 
-      vehiculos.forEach(v => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-              <td>${v.matricula}</td>
-              <td>${v.modelo}</td>
-              <td>${v.color}</td>
-              <td>${v.transitos}</td>
-              <td>${v.totalT}</td>
-          `;
-          tbody.appendChild(tr);
-      });
-    }
+          vehiculos.forEach(v => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${v.matricula}</td>
+                <td>${v.modelo}</td>
+                <td>${v.color}</td>
+                <td>${v.transitos}</td>
+                <td>${v.totalT}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+      }
     
     function mostrar_transitos(transitos) {
         const tbody = document.getElementById("tablaTransitos");
@@ -164,12 +162,11 @@
         const [fecha, hora] = fechaStr.split("T");
         return { fecha, hora };
     }
-    const evtSource = new EventSource(urlRegistroSSE);
+  
 
-    evtSource.onmessage = function(event) {
-        const listaRespuestas = JSON.parse(event.data); 
-        procesarResultadosSubmit(listaRespuestas); 
-    };
+    function procesarMensajeSSE(mensaje) {
+        procesarResultadosSubmit(mensaje); 
+    }
     function conexionSSECerrada(event){
             cerrar();
     }
@@ -184,6 +181,9 @@
 
   </script>
   
+  
 </body>
+<script src="utilesVista.js"></script>
+<script src="vistaWeb.js"></script>
 
 </html>

@@ -74,5 +74,27 @@
     © 2025 — Asignar bonificaciones
   </footer>
   <script src="utilesVista.js"></script>
+  <script>
+    const selectPuestos = document.getElementById("puesto"); 
+    async function cargarPuestos() {
+        try {
+            const response = await fetch("/asignarBonificacion/puestos");
+            if (!response.ok) throw new Error("Error al obtener los puestos");
+            const puestos = await response.json();
+
+            // Llenar select
+            puestos.forEach(p => {
+                const option = document.createElement("option");
+                option.value = p.nombre; 
+                option.textContent = p.nombre+"-"+p.direccion;
+                selectPuestos.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudieron cargar los puestos");
+        }
+    }
+  </script>
 </body>
 </html>

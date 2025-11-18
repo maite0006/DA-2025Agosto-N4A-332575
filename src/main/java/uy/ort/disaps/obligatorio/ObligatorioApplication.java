@@ -5,13 +5,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 
 import uy.ort.disaps.obligatorio.dominio.Administrador;
+import uy.ort.disaps.obligatorio.dominio.Bonificacion;
 import uy.ort.disaps.obligatorio.dominio.Categoria;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.Puesto;
+import uy.ort.disaps.obligatorio.dominio.SBonificacionExonerado;
+import uy.ort.disaps.obligatorio.dominio.SBonificacionFrecuente;
+import uy.ort.disaps.obligatorio.dominio.SBonificacionTrabajador;
 import uy.ort.disaps.obligatorio.dominio.Tarifa;
 import uy.ort.disaps.obligatorio.dominio.Vehiculo;
 import uy.ort.disaps.obligatorio.servicios.ServicioUsuarios;
 import uy.ort.disaps.obligatorio.servicios.fachada.fachada;
+
 
 @SpringBootApplication
 public class ObligatorioApplication {
@@ -90,8 +95,8 @@ public class ObligatorioApplication {
 		fachada.getInstancia().agregarPuesto(puesto2);
 		fachada.getInstancia().agregarPuesto(puesto3);
 		
-		Vehiculo vehiculo1= new Vehiculo("AAA 5678", "Mustang 69","Verde", auto, propietario);
-		Vehiculo vehiculo2= new Vehiculo("ASZ 5006", "Cafe Racer","Negra", moto, propietario);
+		Vehiculo vehiculo1= new Vehiculo("AAA 5678", "Mustang 69","Verde", auto, propietario2);
+		Vehiculo vehiculo2= new Vehiculo("ASZ 5006", "Cafe Racer","Negra", moto, propietario2);
 		Vehiculo vehiculo3= new Vehiculo("APQ 4390", "Clase A", "Gris", motorHome, propietario2);
 
 		Vehiculo vehiculo4= new Vehiculo("BDF 4095", "Dodge Challenger", "Bordo", auto, propietario);
@@ -103,6 +108,10 @@ public class ObligatorioApplication {
 		fachada.getInstancia().agregarVehiculo(vehiculo3);
 		fachada.getInstancia().agregarVehiculo(vehiculo2);
 		fachada.getInstancia().agregarVehiculo(vehiculo1);
+
+		Bonificacion exonerado= new Bonificacion("Exonerado", SBonificacionExonerado);
+		Bonificacion frecuente= new Bonificacion("Frecuente", SBonificacionFrecuente);
+		Bonificacion trabajadores= new Bonificacion("Trabajador", SBonificacionTrabajador);
 
 	}
 }

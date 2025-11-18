@@ -25,7 +25,7 @@ import uy.ort.disaps.obligatorio.utils.ConexionNavegador;
 import uy.ort.disaps.obligatorio.utils.Respuesta;
 
 @RestController
-@RequestMapping("/menuProp")
+@RequestMapping("/menuprop")
 @Scope("session") 
 public class ControladorMenuProp implements Observador{
     
@@ -76,30 +76,19 @@ public class ControladorMenuProp implements Observador{
                 );
 
           
-                SseEmitter emitter = conexionNavegador.getConexionSSE();
-                if (emitter != null) {
-                    emitter.send(respuestas); 
-                }
+               conexionNavegador.enviarJSON(respuestas);
             }
             if (evento.equals(fachada.eventos.altaNoti)) {
-                
-                SseEmitter emitter = conexionNavegador.getConexionSSE();
-                if (emitter != null) {
-                   
                     conexionNavegador.enviarJSON(Respuesta.lista( notificaciones()));
-                    
-                }
+                
             }
             if (evento.equals(fachada.eventos.altaTransito)) {
-                SseEmitter emitter = conexionNavegador.getConexionSSE();
-                if (emitter != null) {
-                   
-                    conexionNavegador.enviarJSON(
-                        Respuesta.lista(
-                            new Respuesta("transitos", fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula()))
-                        )
-                    );
-                }
+              
+                conexionNavegador.enviarJSON(
+                    Respuesta.lista(
+                        new Respuesta("transitos", fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula()))
+                    )
+                );   
             }
         } catch (Exception e) {
             e.printStackTrace();

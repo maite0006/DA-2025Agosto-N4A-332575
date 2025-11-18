@@ -86,8 +86,8 @@ public class ServicioTransitos {
         Double descuento=0.0;
         String boni="";
         if (b != null&&prop.aplicaBonificaciones()) {  
-             boni=b.getNombre();
-            descuento=monto-b.aplicar(f, PasoHoy, monto);
+            boni=b.getNombre();
+            descuento= monto-b.aplicar(f, PasoHoy, monto);
             monto= b.aplicar(f, PasoHoy, monto);
         }
         boni="No se aplicaron bonificaciones";
@@ -113,6 +113,7 @@ public class ServicioTransitos {
         TransitoDTOP dtoP= new TransitoDTOP(prop.getCedula(), puesto,v.getMatricula(), v.getCategoria().getNombre(), String.valueOf(monto+descuento), boni,String.valueOf(monto), String.valueOf(prop.getSaldoActual()), fecha, String.valueOf(descuento));
         TransitoDTOA dtoA= new TransitoDTOA(prop.getNombreCompleto(), prop.getEstadoNombre(),v.getCategoria().getNombre(), boni, String.valueOf(monto), String.valueOf(prop.getSaldoActual()));
         transitoDTOs.add(dtoP);
+        fachada.getInstancia().avisar(fachada.eventos.altaTransito);
         return dtoA;
     }
     public ArrayList<TransitoDTOP> getTransitos(int cedula){

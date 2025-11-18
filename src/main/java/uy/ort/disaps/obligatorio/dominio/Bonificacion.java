@@ -8,12 +8,10 @@ public class Bonificacion {
     @Getter
     public String nombre;
     public StrategyBonificacion strategyBonificacion;
-    public Puesto exonerado;
 
-    public Bonificacion(String nombre, StrategyBonificacion strategyBonificacion, Puesto puestoExonerado) {
+    public Bonificacion(String nombre, StrategyBonificacion strategyBonificacion) {
         this.nombre = nombre;
         this.strategyBonificacion = strategyBonificacion;
-        this.exonerado=puestoExonerado;
     }
 
     public double aplicar(Date fecha, boolean frecuenta, double montoO) {
