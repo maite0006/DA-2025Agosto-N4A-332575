@@ -20,10 +20,15 @@ public class EstadoSuspendido extends EstadoPropietario {
     public boolean aplicaBonificaciones() {
         return false;
     }
+    @Override
+    public  boolean asignaBonificaciones(){
+        return true;
+    }
 
     @Override
     public String nombreEstado() {
         return "Suspendido";
     }
+
     
 }

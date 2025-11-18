@@ -34,7 +34,7 @@ public class ControladorEmularTransito {
     @PostMapping("/emular")
     public List<Respuesta> emularTransito(@RequestParam String matricula, @RequestParam String puesto, @RequestParam String fechaHora) throws ParseException{
         try {
-           TransitoDTOA dto= fachada.getInstancia().emularTransito(matricula, puesto, fechaHora);
+          TransitoDTOA dto= fachada.getInstancia().emularTransito(matricula, puesto, fechaHora);
           return Respuesta.lista( new Respuesta("resultadoTransito", dto));
 
         } catch (PeajeExcepcion e) {

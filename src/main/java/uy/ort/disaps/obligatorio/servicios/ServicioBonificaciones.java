@@ -1,12 +1,16 @@
 package uy.ort.disaps.obligatorio.servicios;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import uy.ort.disaps.obligatorio.DTOs.BoniDTO;
 import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.Puesto;
 import uy.ort.disaps.obligatorio.dominio.StrategyBonificacion;
+import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
+import uy.ort.disaps.obligatorio.servicios.fachada.fachada;
 
 public class ServicioBonificaciones {
     public ArrayList<Bonificacion> bonificaciones=new ArrayList<>();
@@ -37,6 +41,49 @@ public class ServicioBonificaciones {
 
         return null; 
     }
+    public List<BoniDTO> getBonisDTOs() {
+        List<BoniDTO> dtos = new ArrayList<>();
 
+        for (Bonificacion b : bonificaciones) {
+            dtos.add(new BoniDTO(b.getNombre()));
+        }
+
+        return dtos;
+    }
+    public List<AsignacionBonificacion> getAsignadas(int cedulaN) {
+        List<AsignacionBonificacion> asignadas= new ArrayList<>();
+        for(AsignacionBonificacion a: bonificacionesAsignadas){
+            if(a.getPropietario().getCedula()==cedulaN){
+                asignadas.add(a);
+            }
+        }
+        return asignadas;
     
+    }
+    public void asignarBoni(String bonificacion, String puesto, String cedula)throws PeajeExcepcion {
+        int cedulaN= Integer.parseInt(cedula.trim());
+        Propietario prop=fachada.getInstancia().obtenerProp(cedulaN);
+        if(!prop.asignaBonificaciones()){
+            throw new PeajeExcepcion("El propietario esta deshabilitado. No se pueden asignar bonificacione");
+        }
+        Puesto p=fachada.getInstancia().obtenerPuesto(puesto);
+        Bonificacion existe=obtenerBonificacionPropietario(prop, p);
+        if(existe!=null){
+            throw new PeajeExcepcion("Ya tiene una bonificación asignada para ese puesto");
+        }
+        Bonificacion b= bonificacionXNombre(bonificacion);
+        AsignacionBonificacion asignacion= new AsignacionBonificacion(b, prop, p);
+        bonificacionesAsignadas.add(asignacion);
+    
+    }
+
+    public Bonificacion bonificacionXNombre(String bonificacion){
+        for(Bonificacion b: bonificaciones){
+            if (b.getNombre().equalsIgnoreCase(bonificacion)) {
+                return b;
+            }
+        }
+        return null;
+    }
+
 }

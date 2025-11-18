@@ -30,6 +30,7 @@ public class Propietario {
     public boolean puedeTransitar() { return estado.puedeTransitar(); }
     public boolean recibeNotificaciones() { return estado.recibeNotificaciones(); }
     public boolean aplicaBonificaciones() { return estado.aplicaBonificaciones(); }
+    public boolean asignaBonificaciones(){return estado.asignaBonificaciones();}
 
     // Cambiar el estado dinámicamente
     public void cambiarEstado(EstadoPropietario nuevoEstado) {

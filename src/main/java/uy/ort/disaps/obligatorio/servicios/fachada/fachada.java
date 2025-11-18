@@ -12,7 +12,9 @@ import uy.ort.disaps.obligatorio.DTOs.PuestoDTO;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOA;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOP;
 import uy.ort.disaps.obligatorio.DTOs.VehiculoDTO;
+import uy.ort.disaps.obligatorio.DTOs.BoniDTO;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
+import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
 import uy.ort.disaps.obligatorio.dominio.Notificacion;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
@@ -70,6 +72,9 @@ public class fachada extends Observable {
     public void agregarBonificacion(uy.ort.disaps.obligatorio.dominio.Bonificacion bonificacion) {
         sBonificaciones.agregarBonificacion(bonificacion);
     }
+    public void agregarBoniAsignada(AsignacionBonificacion ba){
+        sBonificaciones.agregarBonificacionAsignada(ba);
+    }
     public Propietario LoginPropietario(int cedula, String contrasenia) throws PeajeExcepcion {
       return sUsuarios.LoginPropietario(cedula, contrasenia);
        
@@ -106,5 +111,23 @@ public class fachada extends Observable {
     public void crearNotificacion(Propietario prop, String string, Date f) {
          sNotificaciones.crearNotificacion(prop, string, f);
     }
-
+    public List<BoniDTO> bonisDTOs() {
+        
+        return sBonificaciones.getBonisDTOs();
+    }
+    public PropietarioDto obtenerPropBoni(String cedula) throws PeajeExcepcion{
+        return sUsuarios.PropietarioDTOCompleto(cedula);
+    }
+    public List<AsignacionBonificacion> obtenerBAsignadas(int cedulaN) {
+        return sBonificaciones.getAsignadas(cedulaN);
+    }
+    public void asignarBonificacion(String bonificacion, String puesto, String cedula) throws PeajeExcepcion {
+         sBonificaciones.asignarBoni(bonificacion,puesto,cedula);
+    }
+     public Puesto obtenerPuesto(String puesto) {
+       return sTransitos.buscarPuestoPorNombre(puesto);
+    }
+    public Propietario obtenerProp(int cedula){
+        return sUsuarios.buscarPropietarioPorCedula(cedula);
+    }
 }

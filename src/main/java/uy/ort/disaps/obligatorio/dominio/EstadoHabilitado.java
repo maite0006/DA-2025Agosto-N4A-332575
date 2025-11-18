@@ -20,6 +20,10 @@ public class EstadoHabilitado extends EstadoPropietario {
     public boolean aplicaBonificaciones() {
         return true;
     }
+    @Override
+    public  boolean asignaBonificaciones(){
+        return true;
+    }
 
     @Override
     public String nombreEstado() {

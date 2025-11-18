@@ -90,7 +90,9 @@ public class ServicioTransitos {
             descuento= monto-b.aplicar(f, PasoHoy, monto);
             monto= b.aplicar(f, PasoHoy, monto);
         }
-        boni="No se aplicaron bonificaciones";
+        else{
+            boni="No se aplicaron bonificaciones";
+        }
         ResultadoCobro res= prop.cobrarTransito(monto);
         switch (res) {
             case SALDO_INSUFICIENTE:
@@ -191,7 +193,7 @@ public class ServicioTransitos {
 
     public double obtenerTarifa(Puesto p, Categoria c){
         for(Tarifa t: p.getTarifas()){
-            if(t.getCategoria().equals(c)){
+            if(t.getCategoria().equalsIgnoreCase(c.getNombre())){
                  return t.getMonto();
             }
         }

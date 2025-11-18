@@ -20,65 +20,175 @@
 
     <!-- Dos columnas: selección + búsqueda -->
     <div class="grid-bonificacion">
-      <section class="card">
-        <label for="bonificacion">Bonificaciones definidas</label>
-        <select id="bonificacion" name="bonificacion" required>
-          <option value="">Seleccione una bonificación...</option>
-        </select>
+    <form id="altaBoniForm" onsubmit="asignarBoni(event)">
 
-        <label for="puesto">Puestos definidos</label>
-        <select id="puesto" name="puesto" required>
-          <option value="">Seleccione un puesto...</option>
-        </select>
-      </section>
+          <section class="card">
+            <label for="bonificacion">Bonificaciones definidas</label>
+            <select id="bonificacion" name="bonificacion" >
+              <option value="">Seleccione una bonificación...</option>
+            </select>
 
-      <section class="card">
-        <label for="cedula">Cédula de identidad</label>
-        <div class="search-group">
-          <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
-          <button type="button" class="btn-search">Buscar propietario</button>
+            <label for="puesto">Puestos definidos</label>
+            <select id="puesto" name="puesto" >
+              <option value="">Seleccione un puesto...</option>
+            </select>
+          </section>
+
+          <section class="card">
+            <label for="cedula">Cédula de identidad</label>
+            <div class="search-group">
+              <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
+              <button type="button" id="btnFindPropietario" class="btn-search">Buscar propietario</button>
+            </div>
+
+            <div class="propietario-panel">
+              <h3>Propietario</h3>
+              <p><strong>Nombre:</strong> <span id="nombreProp"></span></p>
+              <p><strong>Estado:</strong> <span id="estadoProp"></span></p>
+            </div>
+            <p id="errorMsgP"  class="errorMsg"></p>
+          </section>
         </div>
 
-        <div class="propietario-panel">
-          <h3>Propietario</h3>
-          <p><strong>Nombre:</strong> <span id="nombreProp"></span></p>
-          <p><strong>Estado:</strong> <span id="estadoProp"></span></p>
+        <!-- Tabla de bonificaciones asignadas -->
+        <section class="card">
+          <h2>Bonificaciones asignadas</h2>
+          <table class="tabla-bonificaciones">
+            <thead>
+              <tr>
+                <th>Bonificación</th>
+                <th>Puesto</th>
+                <th>Fecha asignación</th>
+              </tr>
+            </thead>
+            <tbody id="tablaBonificaciones">
+              <tr><td colspan="3" class="empty"></td></tr>
+            </tbody>
+          </table>
+          <p id="errorMsgB"  class="errorMsg"></p>
+
+        </section>
+
+        <!-- Botón principal -->
+        <div class="asignar-section">
+          <button id="btnAsignarBoni" type="submit" class="btn-primario">Asignar bonificación</button>
         </div>
-      </section>
-    </div>
-
-    <!-- Tabla de bonificaciones asignadas -->
-    <section class="card">
-      <h2>Bonificaciones asignadas</h2>
-      <table class="tabla-bonificaciones">
-        <thead>
-          <tr>
-            <th>Bonificación</th>
-            <th>Puesto</th>
-            <th>Fecha asignación</th>
-          </tr>
-        </thead>
-        <tbody id="tablaBonificaciones">
-          <tr><td colspan="3" class="empty">Sin bonificaciones asignadas</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <!-- Botón principal -->
-    <div class="asignar-section">
-      <button type="submit" class="btn-primario">Asignar bonificación</button>
-    </div>
+    </form>
   </main>
 
   <footer>
     © 2025 — Asignar bonificaciones
   </footer>
   <script src="utilesVista.js"></script>
+  <script src="vistaWeb.js"></script>  
   <script>
+    const btnBuscar = document.getElementById("btnFindPropietario")
+    const btnABoni= document.getElementById("btnAsignarBoni")
+    const inputCedula = document.getElementById("cedula");
     const selectPuestos = document.getElementById("puesto"); 
+    const selectBonis = document.getElementById("bonificacion"); 
+    const nombreProp = document.getElementById("nombreProp");
+    const estadoProp = document.getElementById("estadoProp");
+    const tablaBonificaciones = document.getElementById("tablaBonificaciones");
+    
+    function asignarBoni(event){
+      event.preventDefault();
+      limpiar_error();
+      const puestoSeleccionado = selectPuestos.value;       
+      const bonificacionSeleccionada = selectBonis.value;  
+      let errores="";
+      if(bonificacionSeleccionada==""){
+        errores+="Debe especificar una bonificación"
+      }
+      if(puestoSeleccionado==""){
+        errores+=" - Debe especificar un puesto"
+
+      }
+      if(errores!=""){
+        document.getElementById("errorMsgB").innerHTML= errores;
+        return
+      }
+      submit("/Bonificacion/Asignar", serializarFormulario("altaBoniForm"));
+    }
+
+
+    btnBuscar.addEventListener("click", () => {
+        limpiar_error();
+        nombreProp.textContent = "";
+        estadoProp.textContent = "";
+        tablaBonificaciones.textContent=""
+        const cedula = inputCedula.value.trim();
+        if (!cedula) {
+            mostrarMensaje("Ingrese una cédula válida");
+            return;
+        }
+
+        // Serializamos los datos como url-encoded
+        const params = `cedula=${encodeURIComponent(cedula)}`;
+
+        
+        submit("/Bonificacion/buscarPropietario", params,"GET");
+    });
+
+  // Función que procesará la respuesta del submit
+  function mostrar_Propietario(respuesta) {
+      tablaBonificaciones.innerHTML=""
+      nombreProp.textContent = respuesta.nombre;
+      estadoProp.textContent = respuesta.estado;
+      respuesta.asignadas.forEach(b => {
+            const tr = document.createElement("tr");
+            const tdBoni = document.createElement("td");
+            tdBoni.textContent = b.nombre;
+            const tdPuesto = document.createElement("td");
+            tdPuesto.textContent = b.puesto;
+            const tdFecha= document.createElement("td");
+            tdFecha.textContent = b.fecha;
+            tr.appendChild(tdBoni);
+            tr.appendChild(tdPuesto);
+             tr.appendChild(tdFecha);
+            tablaBonificaciones.appendChild(tr);
+        });
+  }
+    function mostrar_errorP(mensaje) {
+      const div = document.getElementById("errorMsgP");
+      div.textContent = mensaje;
+      div.classList.remove("oculto");
+    }
+     function mostrar_errorB(mensaje) {
+      const div = document.getElementById("errorMsgB");
+      div.textContent = mensaje;
+      div.classList.remove("oculto");
+    }
+    function limpiar_error() {
+    document.getElementById("errorMsgP").textContent = "";
+    document.getElementById("errorMsgP").classList.add("oculto");
+    document.getElementById("errorMsgB").textContent = "";
+    document.getElementById("errorMsgB").classList.add("oculto");
+    }
+    
+    
+    async function cargarBonificaciones() {
+        try {
+            const response = await fetch("/Bonificacion/bonificaciones");
+            if (!response.ok) throw new Error("Error al obtener las bonificaciones");
+            const bonis = await response.json();
+
+            // Llenar select
+            bonis.forEach(b => {
+                const option = document.createElement("option");
+                option.value = b.nombre; 
+                option.textContent = b.nombre;
+                selectBonis.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudieron cargar las bonificaciones");
+        }
+    }
     async function cargarPuestos() {
         try {
-            const response = await fetch("/asignarBonificacion/puestos");
+            const response = await fetch("/Bonificacion/puestos");
             if (!response.ok) throw new Error("Error al obtener los puestos");
             const puestos = await response.json();
 
@@ -95,6 +205,9 @@
             alert("No se pudieron cargar los puestos");
         }
     }
+
+    cargarBonificaciones();
+    cargarPuestos();
   </script>
 </body>
 </html>

@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties.Admin;
 
 import uy.ort.disaps.obligatorio.dominio.Administrador;
+import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
 import uy.ort.disaps.obligatorio.dominio.Categoria;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
@@ -109,9 +110,19 @@ public class ObligatorioApplication {
 		fachada.getInstancia().agregarVehiculo(vehiculo2);
 		fachada.getInstancia().agregarVehiculo(vehiculo1);
 
-		Bonificacion exonerado= new Bonificacion("Exonerado", SBonificacionExonerado);
-		Bonificacion frecuente= new Bonificacion("Frecuente", SBonificacionFrecuente);
-		Bonificacion trabajadores= new Bonificacion("Trabajador", SBonificacionTrabajador);
+		Bonificacion exonerado= new Bonificacion("Exonerado", new SBonificacionExonerado());
+		Bonificacion frecuente= new Bonificacion("Frecuente", new SBonificacionFrecuente());
+		Bonificacion trabajador= new Bonificacion("Trabajador", new SBonificacionTrabajador());
+
+		fachada.getInstancia().agregarBonificacion(exonerado);
+		fachada.getInstancia().agregarBonificacion(frecuente);
+		fachada.getInstancia().agregarBonificacion(trabajador);
+		AsignacionBonificacion asignacion1= new AsignacionBonificacion(trabajador, propietario, puesto3);
+		AsignacionBonificacion asignacion2= new AsignacionBonificacion(frecuente, propietario, puesto2);
+		fachada.getInstancia().agregarBoniAsignada(asignacion2);
+		fachada.getInstancia().agregarBoniAsignada(asignacion1);
+		
+
 
 	}
 }

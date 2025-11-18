@@ -23,7 +23,16 @@ button {
   cursor: pointer;
   transition: background-color 0.3s;
 }
-
+.errorMsg {
+    color: #a94442;           /* rojo intenso */
+    background-color: #f2dede; /* fondo rosado suave */
+    border: 1px solid #ebccd1; /* borde rojo claro */
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-weight: bold;
+    display: block;           /* se asegura de ser bloque */
+}
 /* =========================
    TOPBAR
 ========================= */
@@ -348,3 +357,4 @@ footer {
   padding-bottom: 20px;
   font-size: 0.9em;
 }
+

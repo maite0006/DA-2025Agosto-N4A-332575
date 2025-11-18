@@ -40,7 +40,7 @@
 
           <button type="submit" class="btn-primario">Emular tránsito</button>
         </form>
-        <div id="errorMsg" class="mensaje-error oculto"></div>
+        <div id="errorMsg" class="mensaje-error "></div>
       </section>
 
       
@@ -140,6 +140,11 @@
       div.textContent = mensaje;
       div.classList.remove("oculto");
     }
+    function limpiar_error() {
+        const div = document.getElementById("errorMsg");
+        div.textContent = "";
+        div.classList.add("oculto");
+    }
     function mostrar_resultadoTransito(dto) {
       const div = document.getElementById("resultadoTransito");
       div.innerHTML = `
@@ -151,11 +156,6 @@
       `;
     }
 
-    function limpiar_error() {
-        const div = document.getElementById("errorMsg");
-        div.textContent = "";
-        div.classList.add("oculto");
-    }
 
     function mostrar_logoutExitoso(urlDestino) {
         window.location.href = urlDestino;

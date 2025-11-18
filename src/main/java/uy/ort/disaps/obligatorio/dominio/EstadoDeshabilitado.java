@@ -20,6 +20,10 @@ public class EstadoDeshabilitado extends EstadoPropietario {
     public boolean aplicaBonificaciones() {
         return false;
     }
+    @Override
+    public  boolean asignaBonificaciones(){
+        return false;
+    }
 
     @Override
     public String nombreEstado() {
