@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
+import uy.ort.disaps.obligatorio.DTOs.NotificacionDTO;
 import uy.ort.disaps.obligatorio.DTOs.PropietarioDto;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOP;
 import uy.ort.disaps.obligatorio.DTOs.VehiculoDTO;
@@ -45,12 +47,15 @@ public class ControladorMenuProp implements Observador{
         List<TransitoDTOP> transitos =fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula());
         PropietarioDto propDto= fachada.getInstancia().obtenerDTOProp(propActual.getNombreCompleto(), propActual.getEstadoNombre(), propActual.getSaldoActual());
         List<VehiculoDTO> vDtos= fachada.getInstancia().obtenerVehiculosDTO(propActual);
-
+        List<NotificacionDTO> nDTOs= fachada.getInstancia().getNotificacionesDTO(propActual);
+        List<AsignacionBoniDTO> bDTOs= fachada.getInstancia().AsignacionesDTO(propActual.getCedula());
         //  datos iniciales de cabecera
         return Respuesta.lista(
             new Respuesta("propietario", propDto),
             new Respuesta("transitos", transitos),
-            new Respuesta("vehiculos", vDtos)
+            new Respuesta("vehiculos", vDtos),
+            new Respuesta("notificaciones", nDTOs),
+            new Respuesta("bonificaciones", bDTOs)
 
         );
     }
@@ -79,25 +84,31 @@ public class ControladorMenuProp implements Observador{
                conexionNavegador.enviarJSON(respuestas);
             }
             if (evento.equals(fachada.eventos.altaNoti)) {
-                    conexionNavegador.enviarJSON(Respuesta.lista( notificaciones()));
+                    conexionNavegador.enviarJSON(Respuesta.lista( new Respuesta ("notificaciones", fachada.getInstancia().getNotificacionesDTO(propActual))));
                 
             }
             if (evento.equals(fachada.eventos.altaTransito)) {
               
                 conexionNavegador.enviarJSON(
                     Respuesta.lista(
-                        new Respuesta("transitos", fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula()))
+                        new Respuesta("transitos", fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula())),
+                        new Respuesta("vehiculos", fachada.getInstancia().obtenerVehiculosDTO(propActual))
                     )
                 );   
+            }
+            if(evento.equals(fachada.eventos.asignacionBoni)){
+                 conexionNavegador.enviarJSON(
+                    Respuesta.lista(
+                        new Respuesta("bonificaciones", fachada.getInstancia().AsignacionesDTO(propActual.getCedula()))
+                    )
+                ); 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    private Respuesta notificaciones(){
-        return new Respuesta ("notificaciones", NotiMapper.fromNotis(fachada.getInstancia().getNotificaciones(propActual)));
-    }
+   
     
 
     

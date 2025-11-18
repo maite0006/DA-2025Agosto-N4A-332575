@@ -35,7 +35,7 @@ public class ControladorAsignarBonificacion {
     @GetMapping("/buscarPropietario")
     public List<Respuesta> buscarProp(@RequestParam String cedula) throws PeajeExcepcion{
         try {
-            PropietarioDto dto= fachada.getInstancia().obtenerPropBoni(cedula);
+            PropietarioDto dto= fachada.getInstancia().obtenerProp(cedula);
             return Respuesta.lista(new Respuesta("Propietario", dto));
             
         } catch (PeajeExcepcion e) {
@@ -47,7 +47,7 @@ public class ControladorAsignarBonificacion {
     public List<Respuesta> asignarBoni(@RequestParam String bonificacion, @RequestParam String puesto, @RequestParam String cedula){
         try {
             fachada.getInstancia().asignarBonificacion(bonificacion, puesto, cedula);
-            return Respuesta.lista(new Respuesta("Propietario", fachada.getInstancia().obtenerPropBoni(cedula)));
+            return Respuesta.lista(new Respuesta("Propietario", fachada.getInstancia().obtenerProp(cedula)));
             
         } catch (PeajeExcepcion e) {
             return Respuesta.lista(new Respuesta("errorB", e.getMessage()));

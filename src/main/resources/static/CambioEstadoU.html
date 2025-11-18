@@ -22,18 +22,16 @@
       <section class="card">
         <label for="cedula">Cédula de identidad</label>
         <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
-        <button type="button" class="btn-search">Buscar propietario</button>
+        <button type="button" class="btn-search" id="btnBProp">Buscar propietario</button>
       </section>
 
       <section class="card">
         <label for="nuevoEstado">Estados definidos</label>
         <select id="nuevoEstado" name="nuevoEstado" required>
           <option value="">Seleccione un estado...</option>
-          <option value="Activo">Activo</option>
-          <option value="Suspendido">Suspendido</option>
-          <option value="Bloqueado">Bloqueado</option>
         </select>
-        <button type="submit" class="btn-primario">Cambiar estado</button>
+        <button type="submit" class="btn-primario" id="btnEstado" disabled>Cambiar estado</button>
+        <p id="errorMsg"  class="errorMsg"></p>
       </section>
     </div>
 
@@ -49,6 +47,50 @@
     © 2025 — Cambiar estado
   </footer>
   <script src="utilesVista.js"></script>
+  <script src="vistaWeb.js"></script>    <script>
+    const nombreProp= document.getElementById("nombre");
+    const estadoProp= document.getElementById("estadoActual");
+    const btnBuscar= document.getElementById("btnBProp");
+    const btnEstado= document.getElementById("btnEstado");
+    const selectEstado=document.getElementById("nuevoEstado");
+    const inputCedula = document.getElementById("cedula");
+
+    btnBuscar.addEventListener("click", () => {
+        limpiar_error();
+        nombreProp.textContent = "";
+        estadoProp.textContent = "";
+        const cedula = inputCedula.value.trim();
+        if (!cedula) {
+            mostrarMensaje("Ingrese una cédula válida");
+            return;
+        }
+
+        // Serializamos los datos como url-encoded
+        const params = `cedula=${encodeURIComponent(cedula)}`;
+
+        
+        submit("/Estado/Propietario", params,"GET");
+    });
+
+    function mostrar_Propietario(respuesta) {
+      nombreProp.textContent = respuesta.nombre;
+      estadoProp.textContent = respuesta.estado;
+      btnEstado.disabled = false;
+
+    }
+   
+
+    function mostrar_error(mensaje) {
+      const div = document.getElementById("errorMsg");
+      div.textContent = mensaje;
+      div.classList.remove("oculto");
+    }
+     function limpiar_error() {
+    document.getElementById("errorMsg").textContent = "";
+    document.getElementById("errorMsg").classList.add("oculto");
+  
+    }
+  </script>
 </body>
 
 </html>

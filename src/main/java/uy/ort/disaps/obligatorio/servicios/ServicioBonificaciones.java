@@ -3,6 +3,7 @@ package uy.ort.disaps.obligatorio.servicios;
 import java.util.ArrayList;
 import java.util.List;
 
+import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
 import uy.ort.disaps.obligatorio.DTOs.BoniDTO;
 import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
@@ -74,6 +75,7 @@ public class ServicioBonificaciones {
         Bonificacion b= bonificacionXNombre(bonificacion);
         AsignacionBonificacion asignacion= new AsignacionBonificacion(b, prop, p);
         bonificacionesAsignadas.add(asignacion);
+        fachada.getInstancia().avisar(fachada.eventos.asignacionBoni);
     
     }
 
@@ -85,5 +87,16 @@ public class ServicioBonificaciones {
         }
         return null;
     }
+    public ArrayList<AsignacionBoniDTO> asignacionesDTOs(int cedulaN) {
+        List<AsignacionBonificacion> asignaciones= getAsignadas(cedulaN);
+        ArrayList<AsignacionBoniDTO> DTOs= new ArrayList<>();
+        for(AsignacionBonificacion ab: asignaciones){
+            AsignacionBoniDTO dto= new AsignacionBoniDTO(ab.getBonificacion().getNombre(), ab.getPuesto().getNombre(), String.valueOf(ab.getFechaAsignacion()));
+            DTOs.add(dto);
+        }
+        return DTOs;
+    }
+
+    
 
 }

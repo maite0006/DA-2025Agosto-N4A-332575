@@ -21,13 +21,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RestController
 @RequestMapping("/menuAdm")
 @Scope("session")
-public class ControladorMenuAdm implements Observador{
+public class ControladorMenuAdm {
 
-     private final ConexionNavegador conexionNavegador;
-
-    public ControladorMenuAdm(@Autowired ConexionNavegador conexionNavegador) {
-        this.conexionNavegador = conexionNavegador;
-    }
     @GetMapping("/vistaConectada")
     public List<Respuesta> inicializarVista(@SessionAttribute(name="Administrador", required=false) Administrador admin) {
         if (admin == null) {
@@ -40,14 +35,5 @@ public class ControladorMenuAdm implements Observador{
         );
     }
 
-    @GetMapping(value="/registrarSSE", produces=MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter registrarSSE() {
-        conexionNavegador.conectarSSE();
-        return conexionNavegador.getConexionSSE();
-    }
-    @Override
-    public void actualizar(Object evento, Observable origen) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'actualizar'");
-    }
+    
 }

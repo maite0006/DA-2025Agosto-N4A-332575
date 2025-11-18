@@ -115,6 +115,7 @@ public class ServicioTransitos {
         TransitoDTOP dtoP= new TransitoDTOP(prop.getCedula(), puesto,v.getMatricula(), v.getCategoria().getNombre(), String.valueOf(monto+descuento), boni,String.valueOf(monto), String.valueOf(prop.getSaldoActual()), fecha, String.valueOf(descuento));
         TransitoDTOA dtoA= new TransitoDTOA(prop.getNombreCompleto(), prop.getEstadoNombre(),v.getCategoria().getNombre(), boni, String.valueOf(monto), String.valueOf(prop.getSaldoActual()));
         transitoDTOs.add(dtoP);
+        fachada.getInstancia().avisar(fachada.eventos.edicionProp);
         fachada.getInstancia().avisar(fachada.eventos.altaTransito);
         return dtoA;
     }

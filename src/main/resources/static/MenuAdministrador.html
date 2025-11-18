@@ -4,16 +4,18 @@
     <meta charset="UTF-8">
     <title>Menú Administrador</title>
     <link rel="stylesheet" href="css/menuAdministrador.css">
-    
+    <script src='vistaWeb.js'></script>
+
 </head>
 <body>
+    <script src="utilesVista.js"></script>
     <div class="sidebar">
         <label>Administrador: </label>
         <div id="NombreAdm"></div>
         <button onclick="cargarVista('AltaTransito.html')">Alta tránsito</button>
         <button onclick="cargarVista('AltaBonificacionU.html')">Asignar bonificación</button>
         <button onclick="cargarVista('CambioEstadoU.html')">Cambiar estado</button>
-        <button onclick="Logout()">Salir</button>
+        <button onclick="logout()">Salir</button>
     </div>
 
     <div class="content">
@@ -22,7 +24,7 @@
 
     <script>
         urlIniciarVista="/menuAdm/vistaConectada";
-	    urlRegistroSSE = "/menuAdm/registrarSSE"; 
+	    
 
         // Redirige el iframe al contenido elegido
         function cargarVista(vista) {
@@ -30,7 +32,7 @@
         }
 
         // Logout del admin
-        function Logout() {
+        function logout() {
             submit('/accesoAdministrador/logout', '', 'POST');
         }
 
@@ -44,23 +46,8 @@
         function mostrar_usuarioNoAutenticado(urlDestino) {
             window.location.href = urlDestino;
         }
-        const evtSource = new EventSource(urlRegistroSSE);
-        evtSource.onmessage = function(event) {
-            const listaRespuestas = JSON.parse(event.data); 
-            procesarResultadosSubmit(listaRespuestas); 
-        };
-        function conexionSSECerrada(event){
-                cerrar();
-        }
-        async function cerrar(){
-            let respuesta = await mostrarConfirmacion("Se ha cerrado la aplicacion en esta ventana", "Intenar volver a abrirla", "Cerrar");
-            if (respuesta) {
-                location.reload();
-            } else {
-                document.body.innerHTML = '';
-            }
-        }
+       
     </script>
-    <script src="vistaWeb.js"></script>
+    
 </body>
 </html>

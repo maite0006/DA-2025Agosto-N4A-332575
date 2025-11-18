@@ -12,7 +12,9 @@ import uy.ort.disaps.obligatorio.DTOs.PuestoDTO;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOA;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOP;
 import uy.ort.disaps.obligatorio.DTOs.VehiculoDTO;
+import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
 import uy.ort.disaps.obligatorio.DTOs.BoniDTO;
+import uy.ort.disaps.obligatorio.DTOs.NotificacionDTO;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
@@ -33,7 +35,7 @@ public class fachada extends Observable {
     private ServicioBonificaciones sBonificaciones;
     private ServicioTransitos sTransitos;
     private ServicioNotificaciones sNotificaciones;
-    public enum eventos{altaNoti, bajaNotis, edicionProp, altaTransito}
+    public enum eventos{altaNoti, bajaNotis, edicionProp, altaTransito, asignacionBoni}
     
     private fachada() {
         sUsuarios = new ServicioUsuarios();
@@ -89,8 +91,8 @@ public class fachada extends Observable {
     public List<PuestoDTO> puestosDTOs(){
         return  sTransitos.getPuestosDTOs();
     }
-    public List<Notificacion> getNotificaciones(Propietario prop){
-        return sNotificaciones.getNotificaciones(prop);
+    public List<NotificacionDTO> getNotificacionesDTO(Propietario prop){
+        return sNotificaciones.getNotificacionesDTO(prop);
     }
     public TransitoDTOA emularTransito(String matricula, String Puesto, String fechaHora) throws PeajeExcepcion, ParseException{
         return sTransitos.emularTransito(Puesto, matricula, fechaHora);
@@ -115,7 +117,7 @@ public class fachada extends Observable {
         
         return sBonificaciones.getBonisDTOs();
     }
-    public PropietarioDto obtenerPropBoni(String cedula) throws PeajeExcepcion{
+    public PropietarioDto obtenerProp(String cedula) throws PeajeExcepcion{
         return sUsuarios.PropietarioDTOCompleto(cedula);
     }
     public List<AsignacionBonificacion> obtenerBAsignadas(int cedulaN) {
@@ -129,5 +131,8 @@ public class fachada extends Observable {
     }
     public Propietario obtenerProp(int cedula){
         return sUsuarios.buscarPropietarioPorCedula(cedula);
+    }
+    public ArrayList<AsignacionBoniDTO> AsignacionesDTO(int cedulaN) {
+       return sBonificaciones.asignacionesDTOs(cedulaN);
     }
 }

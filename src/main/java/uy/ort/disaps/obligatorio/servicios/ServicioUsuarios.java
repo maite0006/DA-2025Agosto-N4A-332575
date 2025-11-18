@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
+import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
 import uy.ort.disaps.obligatorio.DTOs.PropietarioDto;
 import uy.ort.disaps.obligatorio.DTOs.Mappers.PropMapper;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
@@ -80,8 +81,8 @@ public class ServicioUsuarios {
         if (prop==null) {
             throw new PeajeExcepcion("no existe el propietario");
         }
-        List<AsignacionBonificacion> asignaciones= fachada.getInstancia().obtenerBAsignadas(cedulaN);
-        return PropMapper.fromProp(prop, asignaciones);
+        ArrayList<AsignacionBoniDTO> asign=fachada.getInstancia().AsignacionesDTO(cedulaN);
+        return PropMapper.fromProp(prop, asign);
 
     }
 }

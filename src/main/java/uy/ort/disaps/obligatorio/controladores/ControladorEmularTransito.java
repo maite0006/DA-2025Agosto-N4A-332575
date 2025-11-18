@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/emularTransito")
-@Scope("session")
 public class ControladorEmularTransito {
     
     @GetMapping("/puestos")
