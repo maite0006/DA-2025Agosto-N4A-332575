@@ -19,8 +19,8 @@
     </p>
 
     <!-- Dos columnas: selección + búsqueda -->
-    <div class="grid-bonificacion">
     <form id="altaBoniForm" onsubmit="asignarBoni(event)">
+        <div class="grid-bonificacion">
 
           <section class="card">
             <label for="bonificacion">Bonificaciones definidas</label>
@@ -32,12 +32,13 @@
             <select id="puesto" name="puesto" >
               <option value="">Seleccione un puesto...</option>
             </select>
+            <p id="errorMsgB"  class="errorMsg oculto"></p>
           </section>
 
           <section class="card">
             <label for="cedula">Cédula de identidad</label>
             <div class="search-group">
-              <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
+              <input type="number" id="cedula" name="cedula" placeholder="Ej: 12345678" >
             </div>
             
             <div class="propietario-panel">
@@ -46,7 +47,7 @@
               <p><strong>Estado:</strong> <span id="estadoProp"></span></p>
             </div>
             <button type="button" id="btnFindPropietario" class="btn-search">Buscar propietario</button>
-            <p id="errorMsgP"  class="errorMsg"></p>
+            <p id="errorMsgP"  class="errorMsg oculto"></p>
           </section>
         </div>
 
@@ -65,7 +66,6 @@
               <tr><td colspan="3" class="empty"></td></tr>
             </tbody>
           </table>
-          <p id="errorMsgB"  class="errorMsg"></p>
 
         </section>
 
@@ -73,7 +73,7 @@
         <div class="asignar-section">
           <button id="btnAsignarBoni" type="submit" class="btn-primario">Asignar bonificación</button>
         </div>
-    </form>
+      </form>
   </main>
 
   <footer>
@@ -91,22 +91,23 @@
     const estadoProp = document.getElementById("estadoProp");
     const tablaBonificaciones = document.getElementById("tablaBonificaciones");
     
+
     function asignarBoni(event){
       event.preventDefault();
       limpiar_error();
       const puestoSeleccionado = selectPuestos.value;       
       const bonificacionSeleccionada = selectBonis.value;  
-      let errores="";
-      if(bonificacionSeleccionada==""){
-        errores+="Debe especificar una bonificación"
-      }
-      if(puestoSeleccionado==""){
-        errores+=" - Debe especificar un puesto"
-
-      }
-      if(errores!=""){
-        document.getElementById("errorMsgB").innerHTML= errores;
-        return
+      if(!selectBonis.value||!selectPuestos.value||!inputCedula.value){
+        if (!inputCedula.value) {
+            mostrar_errorP("Debe ingresar un propietario antes de asignar.");
+        }
+        if (!selectBonis.value) {
+            mostrar_errorB("Debe especificar una bonificación.");
+        }
+        if (!selectPuestos.value) {
+            mostrar_errorB(" Debe especificar  un puesto.");
+        }
+        return;
       }
       submit("/Bonificacion/Asignar", serializarFormulario("altaBoniForm"));
     }
@@ -122,43 +123,41 @@
             mostrarMensaje("Ingrese una cédula válida");
             return;
         }
-
-        // Serializamos los datos como url-encoded
         const params = `cedula=${encodeURIComponent(cedula)}`;
-
-        
-        submit("/Bonificacion/buscarPropietario", params,"GET");
+        submit("/Bonificacion/buscarPropietario", params,"GET"); 
     });
 
-  // Función que procesará la respuesta del submit
-  function mostrar_Propietario(respuesta) {
-      tablaBonificaciones.innerHTML=""
-      nombreProp.textContent = respuesta.nombre;
-      estadoProp.textContent = respuesta.estado;
-      respuesta.asignadas.forEach(b => {
-            const tr = document.createElement("tr");
-            const tdBoni = document.createElement("td");
-            tdBoni.textContent = b.nombre;
-            const tdPuesto = document.createElement("td");
-            tdPuesto.textContent = b.puesto;
-            const tdFecha= document.createElement("td");
-            tdFecha.textContent = b.fecha;
-            tr.appendChild(tdBoni);
-            tr.appendChild(tdPuesto);
-             tr.appendChild(tdFecha);
-            tablaBonificaciones.appendChild(tr);
-        });
-  }
+    function mostrar_Propietario(respuesta) {
+        tablaBonificaciones.innerHTML=""
+        nombreProp.textContent = respuesta.nombre;
+        estadoProp.textContent = respuesta.estado;
+        respuesta.asignadas.forEach(b => {
+              const tr = document.createElement("tr");
+              const tdBoni = document.createElement("td");
+              tdBoni.textContent = b.nombre;
+              const tdPuesto = document.createElement("td");
+              tdPuesto.textContent = b.puesto;
+              const tdFecha= document.createElement("td");
+              tdFecha.textContent = b.fecha;
+              tr.appendChild(tdBoni);
+              tr.appendChild(tdPuesto);
+              tr.appendChild(tdFecha);
+              tablaBonificaciones.appendChild(tr);
+          });
+    }
+
     function mostrar_errorP(mensaje) {
       const div = document.getElementById("errorMsgP");
       div.textContent = mensaje;
       div.classList.remove("oculto");
     }
-     function mostrar_errorB(mensaje) {
+
+    function mostrar_errorB(mensaje) {
       const div = document.getElementById("errorMsgB");
-      div.textContent = mensaje;
+      div.textContent +=  mensaje;
       div.classList.remove("oculto");
     }
+
     function limpiar_error() {
     document.getElementById("errorMsgP").textContent = "";
     document.getElementById("errorMsgP").classList.add("oculto");

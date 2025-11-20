@@ -21,17 +21,18 @@
     <div class="estado-container">
       <section class="card">
         <label for="cedula">Cédula de identidad</label>
-        <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" required>
+        <input type="text" id="cedula" name="cedula" placeholder="Ej: 12345678" >
         <button type="button" class="btn-search" id="btnBProp">Buscar propietario</button>
+        <p id="errorMsg"  class="errorMsg oculto"></p>
       </section>
 
       <section class="card">
         <label for="nuevoEstado">Estados definidos</label>
-        <select id="nuevoEstado" name="nuevoEstado" required>
+        <select id="nuevoEstado" name="nuevoEstado" disabled>
           <option value="">Seleccione un estado...</option>
         </select>
         <button type="submit" class="btn-primario" id="btnEstado" disabled>Cambiar estado</button>
-        <p id="errorMsg"  class="errorMsg"></p>
+        
       </section>
     </div>
 
@@ -54,6 +55,15 @@
     const btnEstado= document.getElementById("btnEstado");
     const selectEstado=document.getElementById("nuevoEstado");
     const inputCedula = document.getElementById("cedula");
+    
+  
+    btnEstado.addEventListener("click", () => {
+        limpiar_error();
+        const indiceSeleccionado = parseInt(selectEstado.value);    
+        const cedula = inputCedula.value.trim(); 
+        const params = `index=${encodeURIComponent(indiceSeleccionado)}&cedula=${encodeURIComponent(cedula)}`;
+        submit("/Estado/Cambiar",params ,"PATCH");
+    });
 
     btnBuscar.addEventListener("click", () => {
         limpiar_error();
@@ -61,7 +71,7 @@
         estadoProp.textContent = "";
         const cedula = inputCedula.value.trim();
         if (!cedula) {
-            mostrarMensaje("Ingrese una cédula válida");
+            mostrarMensaje("Debe ingresar una cédula.");
             return;
         }
 
@@ -74,20 +84,46 @@
 
     function mostrar_Propietario(respuesta) {
       nombreProp.textContent = respuesta.nombre;
-      estadoProp.textContent = respuesta.estado;
+      estadoProp.textContent = respuesta.estado; 
+      selectEstadoF(respuesta.estado);
       btnEstado.disabled = false;
-
     }
-   
+
+
+    async function selectEstadoF(estadoActual){
+       try {
+            const response = await fetch("/Estado/Obtener");
+            if (!response.ok) throw new Error("Error al obtener los estados");
+            const estados = await response.json();
+            selectEstado.disabled = false;
+            selectEstado.innerHTML = ""
+
+            // Llenar select
+            estados.forEach((e, index) => {
+                const option = document.createElement("option");
+                option.value = index; 
+                option.textContent = e.nombre;
+                if (e.nombre === estadoActual) {
+                  option.selected = true;
+                }
+                selectEstado.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error(error);
+            alert("No se pudieron cargar los estados");
+        }
+    }
 
     function mostrar_error(mensaje) {
       const div = document.getElementById("errorMsg");
       div.textContent = mensaje;
       div.classList.remove("oculto");
     }
-     function limpiar_error() {
-    document.getElementById("errorMsg").textContent = "";
-    document.getElementById("errorMsg").classList.add("oculto");
+
+    function limpiar_error() {
+      document.getElementById("errorMsg").textContent = "";
+      document.getElementById("errorMsg").classList.add("oculto");
   
     }
   </script>

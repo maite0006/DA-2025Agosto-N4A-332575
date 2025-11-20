@@ -2,6 +2,7 @@ package uy.ort.disaps.obligatorio.dominio;
 import java.util.Date;
 
 import lombok.Getter;
+
 public class Transito {
     @Getter
     private Date fecha;
@@ -10,13 +11,23 @@ public class Transito {
     @Getter
     private Puesto puesto;
     @Getter
-    private double total;
-
-    public Transito(Date f, Vehiculo v, Puesto p, double total){
-        fecha=f;
-        vehiculo=v;
-        puesto=p;
-        this.total=total;
+    private double montoF;
+    @Getter
+    private double descuentoAplicado;
+    @Getter
+    private String nombreBonificacion;
+    
+    public Transito(Date fecha, Vehiculo vehiculo, Puesto puesto, double montoF, double descuentoAplicado,
+            String nombreBonificacion) {
+        this.fecha = fecha;
+        this.vehiculo = vehiculo;
+        this.puesto = puesto;
+        this.montoF = montoF;
+        this.descuentoAplicado = descuentoAplicado;
+        this.nombreBonificacion = nombreBonificacion;
     }
+
+
+   
    
 }

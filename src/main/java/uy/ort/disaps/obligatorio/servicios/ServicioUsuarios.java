@@ -6,10 +6,17 @@ import java.util.List;
 import com.fasterxml.jackson.databind.annotation.JsonAppend.Prop;
 
 import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
+import uy.ort.disaps.obligatorio.DTOs.EstadoDTO;
 import uy.ort.disaps.obligatorio.DTOs.PropietarioDto;
+import uy.ort.disaps.obligatorio.DTOs.Mappers.EstadoMapper;
 import uy.ort.disaps.obligatorio.DTOs.Mappers.PropMapper;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
+import uy.ort.disaps.obligatorio.dominio.EstadoDeshabilitado;
+import uy.ort.disaps.obligatorio.dominio.EstadoHabilitado;
+import uy.ort.disaps.obligatorio.dominio.EstadoPenalizado;
+import uy.ort.disaps.obligatorio.dominio.EstadoPropietario;
+import uy.ort.disaps.obligatorio.dominio.EstadoSuspendido;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.SesionAdm;
 import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
@@ -19,6 +26,12 @@ public class ServicioUsuarios {
     private List<Propietario> propietarios;
     private List<Administrador> administradores;
     private ArrayList<Administrador> admActivos= new ArrayList<>();
+    private List<EstadoPropietario> estadosDisponibles = List.of(
+        new EstadoHabilitado(),
+        new EstadoDeshabilitado(),
+        new EstadoPenalizado(),
+        new EstadoSuspendido()
+    );
     
     public ServicioUsuarios() {
         this.propietarios = new ArrayList<>();
@@ -31,6 +44,7 @@ public class ServicioUsuarios {
     public void agregar(Administrador adm) {
         administradores.add(adm);
     }
+
     public Propietario LoginPropietario(int cedula, String contrasenia) throws PeajeExcepcion {
         Propietario p = buscarPropietarioPorCedula(cedula);
         if (p == null || !p.getContrasenia().equals(contrasenia)) {
@@ -55,6 +69,12 @@ public class ServicioUsuarios {
         return a;
     }
 
+    
+    public void EliminarSesion(Administrador usuario) {
+        admActivos.remove(usuario);
+    }
+
+    //Obtener
     public Administrador buscarAdministradorPorCedula(int cedula) {
         for (Administrador a : administradores) {
             if (a.getCedula()==cedula) return a;
@@ -62,27 +82,27 @@ public class ServicioUsuarios {
         }
         return null;
     }
-    public Propietario buscarPropietarioPorCedula(int cedula) {
+    public Propietario buscarPropietarioPorCedula(int cedula) throws PeajeExcepcion {
         for (Propietario p : propietarios) {
             if (p.getCedula()==cedula) return p;
-            
         }
-        return null;
+        throw new PeajeExcepcion("no existe el Propietario");
     }
-    public void EliminarSesion(Administrador usuario) {
-        admActivos.remove(usuario);
+    public List<EstadoPropietario> getEstadosDisponibles() {
+        return estadosDisponibles;
     }
-    public PropietarioDto nuevoDTOProp(String nombre, String estado, double saldo){
-        return new PropietarioDto(nombre, estado, String.valueOf(saldo));
-    }
-    public PropietarioDto PropietarioDTOCompleto(String cedula) throws PeajeExcepcion{
-        int cedulaN= Integer.parseInt(cedula.trim());
-        Propietario prop= buscarPropietarioPorCedula(cedulaN);
+    
+    //DTOS
+    public PropietarioDto PropietarioDTOCompleto(Propietario prop) throws PeajeExcepcion{
         if (prop==null) {
-            throw new PeajeExcepcion("no existe el propietario");
+            throw new PeajeExcepcion("no existe el Propietario");
         }
-        ArrayList<AsignacionBoniDTO> asign=fachada.getInstancia().AsignacionesDTO(cedulaN);
+        ArrayList<AsignacionBoniDTO> asign=fachada.getInstancia().AsignacionesDTO(prop);
         return PropMapper.fromProp(prop, asign);
 
     }
+    public List<EstadoDTO> estadosDTO(List<EstadoPropietario> estados) {
+        return EstadoMapper.fromEstado(estados);
+    }
+
 }

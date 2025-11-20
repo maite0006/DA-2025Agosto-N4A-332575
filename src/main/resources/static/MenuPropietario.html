@@ -100,7 +100,14 @@
     urlRegistroSSE = "/menuprop/registrarSSE"; 
 
     function logout() { submit('/accesoPropietario/logout', null); }
-    function borrarNotificaciones() { /* lógica SSE o servicio */ }
+
+    function borrarNotificaciones() { 
+      submit("menuprop/borrarNotis","","DELETE")
+     }
+    function mostrar_notificacionM(mensaje){
+      document.getElementById("tablaNotificaciones").innerHTML=""
+      document.getElementById("tablaNotificaciones").innerHTML=mensaje;
+    }
     
     function mostrar_logoutExitoso(urlDestino) {
         window.location.href = urlDestino;
@@ -165,10 +172,10 @@
             <td>${t.puesto}</td>
             <td>${t.matricula}</td>
             <td>${t.categoria}</td>
-            <td>${t.tarifa}</td>
+            <td>${t.tarifa}$</td>
             <td>${t.bonificacion}</td>
-            <td>${t.descuento}</td>
-            <td>${t.total}</td>
+            <td>-${t.descuento}$</td>
+            <td>${t.totalF}$</td>
             <td>${fecha}</td>
             <td>${hora}</td>
             `;
@@ -190,11 +197,10 @@
     async function cerrar(){
             let respuesta = await mostrarConfirmacion("Se ha cerrado la aplicacion en esta ventana", "Intenar volver a abrirla", "Cerrar");
         if (respuesta) {
-            location.reload();
-
+            window.location.href = "/LoginProp.html"
         } else {
             document.body.innerHTML = '';
-            window.location.href = "/accesoPropietario/login.html"
+            window.location.href = "/LoginProp.html"
         }
     }
   </script>

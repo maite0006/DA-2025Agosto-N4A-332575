@@ -15,8 +15,6 @@ public class PropMapper {
 
     public static PropietarioDto fromProp(Propietario prop, ArrayList<AsignacionBoniDTO> asignaciones) {
         if (prop == null) return null;
-
-        
         PropietarioDto dto = new PropietarioDto(
             prop.getNombreCompleto(),
             prop.getEstado().nombreEstado(),

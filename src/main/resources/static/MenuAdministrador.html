@@ -10,8 +10,6 @@
 <body>
     <script src="utilesVista.js"></script>
     <div class="sidebar">
-        <label>Administrador: </label>
-        <div id="NombreAdm"></div>
         <button onclick="cargarVista('AltaTransito.html')">Alta tránsito</button>
         <button onclick="cargarVista('AltaBonificacionU.html')">Asignar bonificación</button>
         <button onclick="cargarVista('CambioEstadoU.html')">Cambiar estado</button>
@@ -23,30 +21,28 @@
     </div>
 
     <script>
-        urlIniciarVista="/menuAdm/vistaConectada";
-	    
-
-        // Redirige el iframe al contenido elegido
-        function cargarVista(vista) {
-            document.getElementById("iframeContenido").src = vista;
-        }
 
         // Logout del admin
         function logout() {
             submit('/accesoAdministrador/logout', '', 'POST');
         }
-
-        function mostrar_logoutExitoso(urlDestino) {
-            window.location.href = urlDestino;
+        function cargarVista(vista) {
+            document.getElementById("iframeContenido").src = vista;
+            sessionStorage.setItem("vistaActual", vista);
         }
 
-        function mostrar_NombreAdmin(nombre){
-            document.getElementById("NombreAdm").innerHTML=nombre;
+         function mostrar_logoutExitoso(urlDestino) {
+            window.location.href = urlDestino;
         }
         function mostrar_usuarioNoAutenticado(urlDestino) {
             window.location.href = urlDestino;
         }
-       
+        window.addEventListener("DOMContentLoaded", () => {
+            const iframe = document.getElementById("iframeContenido");
+            const vistaGuardada = sessionStorage.getItem("vistaActual");
+            iframe.src = vistaGuardada || "AltaTransito.html"; // default si no hay vista guardada
+        });
+
     </script>
     
 </body>

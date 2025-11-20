@@ -5,8 +5,7 @@ import lombok.Getter;
 
 public class TransitoDTOP{
     
-    @Getter
-    public int Cedula;
+    
     @Getter
     public String puesto;
     @Getter
@@ -18,25 +17,22 @@ public class TransitoDTOP{
     @Getter
     public String bonificacion;
     @Getter
-    public String total;
+    public String descuento;
     @Getter
-    public String saldoActual;
+    public String totalF;
     @Getter 
     public String FechaHora;
-    @Getter 
-    public String descuento;
-    public TransitoDTOP(int cedula, String puesto, String matricula, String categoria, String tarifa,
-            String bonificacion, String total, String saldoActual, String fechaHora, String descuento) {
-        Cedula = cedula;
+    
+    public TransitoDTOP( String puesto, String matricula, String categoria, String tarifa,
+            String bonificacion, String total, String fechaHora, String descuento) {
         this.puesto = puesto;
         this.matricula = matricula;
         this.categoria = categoria;
         this.tarifa = tarifa;
         this.bonificacion = bonificacion;
-        this.total = total;
-        this.saldoActual = saldoActual;
-        FechaHora = fechaHora;
         this.descuento = descuento;
+        this.totalF = total;
+        FechaHora = fechaHora;
     }
 
 }

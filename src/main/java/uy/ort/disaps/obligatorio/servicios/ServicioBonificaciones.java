@@ -5,6 +5,7 @@ import java.util.List;
 
 import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
 import uy.ort.disaps.obligatorio.DTOs.BoniDTO;
+import uy.ort.disaps.obligatorio.DTOs.Mappers.BonificacacionMapper;
 import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
@@ -30,6 +31,8 @@ public class ServicioBonificaciones {
     public void agregarBonificacionAsignada(AsignacionBonificacion ab) {
         bonificacionesAsignadas.add(ab);
     }
+
+    //Obtener
     public Bonificacion obtenerBonificacionPropietario(Propietario prop, Puesto puesto) {
         for (AsignacionBonificacion asignacion : bonificacionesAsignadas) {
             boolean mismoProp = asignacion.getPropietario().equals(prop);
@@ -42,28 +45,40 @@ public class ServicioBonificaciones {
 
         return null; 
     }
-    public List<BoniDTO> getBonisDTOs() {
-        List<BoniDTO> dtos = new ArrayList<>();
-
-        for (Bonificacion b : bonificaciones) {
-            dtos.add(new BoniDTO(b.getNombre()));
+    public Bonificacion bonificacionXNombre(String bonificacion){
+        for(Bonificacion b: bonificaciones){
+            if (b.getNombre().equalsIgnoreCase(bonificacion)) {
+                return b;
+            }
         }
-
-        return dtos;
+        return null;
     }
-    public List<AsignacionBonificacion> getAsignadas(int cedulaN) {
+
+    public List<AsignacionBonificacion> getAsignadas(Propietario p) {
         List<AsignacionBonificacion> asignadas= new ArrayList<>();
         for(AsignacionBonificacion a: bonificacionesAsignadas){
-            if(a.getPropietario().getCedula()==cedulaN){
+            if(a.getPropietario().equals(p)){
                 asignadas.add(a);
             }
         }
         return asignadas;
     
     }
-    public void asignarBoni(String bonificacion, String puesto, String cedula)throws PeajeExcepcion {
-        int cedulaN= Integer.parseInt(cedula.trim());
-        Propietario prop=fachada.getInstancia().obtenerProp(cedulaN);
+
+    //DTOS
+    public List<BoniDTO> getBonisDTOs() { 
+        return BonificacacionMapper.fromBoni(bonificaciones);
+    }
+    public ArrayList<AsignacionBoniDTO> asignacionesDTOs(Propietario p) {
+        List<AsignacionBonificacion> asignaciones= getAsignadas(p);
+       return BonificacacionMapper.fromAsignaciones(asignaciones);
+    }
+
+   
+
+    public void asignarBoni(String bonificacion, String puesto, Propietario prop)throws PeajeExcepcion {
+        if(puesto=="") throw new PeajeExcepcion("Debe especificar un peaje");
+        if(bonificacion=="") throw new PeajeExcepcion("Debe especificar una bonificacion");
         if(!prop.asignaBonificaciones()){
             throw new PeajeExcepcion("El propietario esta deshabilitado. No se pueden asignar bonificacione");
         }
@@ -79,23 +94,8 @@ public class ServicioBonificaciones {
     
     }
 
-    public Bonificacion bonificacionXNombre(String bonificacion){
-        for(Bonificacion b: bonificaciones){
-            if (b.getNombre().equalsIgnoreCase(bonificacion)) {
-                return b;
-            }
-        }
-        return null;
-    }
-    public ArrayList<AsignacionBoniDTO> asignacionesDTOs(int cedulaN) {
-        List<AsignacionBonificacion> asignaciones= getAsignadas(cedulaN);
-        ArrayList<AsignacionBoniDTO> DTOs= new ArrayList<>();
-        for(AsignacionBonificacion ab: asignaciones){
-            AsignacionBoniDTO dto= new AsignacionBoniDTO(ab.getBonificacion().getNombre(), ab.getPuesto().getNombre(), String.valueOf(ab.getFechaAsignacion()));
-            DTOs.add(dto);
-        }
-        return DTOs;
-    }
+    
+    
 
     
 

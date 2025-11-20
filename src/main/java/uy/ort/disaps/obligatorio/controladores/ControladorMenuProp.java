@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.context.annotation.Scope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ import uy.ort.disaps.obligatorio.DTOs.Mappers.NotiMapper;
 import uy.ort.disaps.obligatorio.dominio.Notificacion;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.Vehiculo;
+import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
 import uy.ort.disaps.obligatorio.observador.Observable;
 import uy.ort.disaps.obligatorio.observador.Observador;
 import uy.ort.disaps.obligatorio.servicios.fachada.fachada;
@@ -38,17 +40,17 @@ public class ControladorMenuProp implements Observador{
         this.conexionNavegador = conexionNavegador;
     }
     @GetMapping("/vistaConectada")
-    public List<Respuesta> inicializarVista(@SessionAttribute(name = "propietario", required = false) Propietario prop) {
+    public List<Respuesta> inicializarVista(@SessionAttribute(name = "propietario", required = false) Propietario prop) throws PeajeExcepcion {
         if (prop == null) {
             return Respuesta.lista(new Respuesta("usuarioNoAutenticado", "LoginProp.html"));
         }
         fachada.getInstancia().agregarObservador(this);
         this.propActual=prop;
-        List<TransitoDTOP> transitos =fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula());
-        PropietarioDto propDto= fachada.getInstancia().obtenerDTOProp(propActual.getNombreCompleto(), propActual.getEstadoNombre(), propActual.getSaldoActual());
+        List<TransitoDTOP> transitos =fachada.getInstancia().obtenerTransitoDTOs(propActual);
+        PropietarioDto propDto= fachada.getInstancia().obtenerPropDTO(propActual);
         List<VehiculoDTO> vDtos= fachada.getInstancia().obtenerVehiculosDTO(propActual);
         List<NotificacionDTO> nDTOs= fachada.getInstancia().getNotificacionesDTO(propActual);
-        List<AsignacionBoniDTO> bDTOs= fachada.getInstancia().AsignacionesDTO(propActual.getCedula());
+        List<AsignacionBoniDTO> bDTOs= fachada.getInstancia().AsignacionesDTO(propActual);
         //  datos iniciales de cabecera
         return Respuesta.lista(
             new Respuesta("propietario", propDto),
@@ -67,31 +69,39 @@ public class ControladorMenuProp implements Observador{
         return conexionNavegador.getConexionSSE();
     }
 
-  
+    @DeleteMapping("/borrarNotis")
+    public List<Respuesta> eliminarNotis()throws PeajeExcepcion{
+        try{
+            fachada.getInstancia().eliminarNotis(propActual);
+            return Respuesta.lista(new Respuesta("notificacionM","Notificaciones eliminadas con exito"));
+
+        }
+        catch(PeajeExcepcion e){
+             return Respuesta.lista(new Respuesta("notificacionM",e.getMessage()));
+
+        }
+    }
     @Override
     public void actualizar(Object evento, Observable origen) {
       
         try {
             if (evento.equals(fachada.eventos.edicionProp)) {
-                PropietarioDto prop= fachada.getInstancia().obtenerDTOProp(propActual.getNombreCompleto(), propActual.getEstadoNombre(), propActual.getSaldoActual());
+                PropietarioDto prop= fachada.getInstancia().obtenerPropDTO(propActual);
   
                 
                 List<Respuesta> respuestas = Respuesta.lista(
                     new Respuesta("propietario", prop)
                 );
-
-          
                conexionNavegador.enviarJSON(respuestas);
             }
-            if (evento.equals(fachada.eventos.altaNoti)) {
+            if (evento.equals(fachada.eventos.Notificacion)) {
                     conexionNavegador.enviarJSON(Respuesta.lista( new Respuesta ("notificaciones", fachada.getInstancia().getNotificacionesDTO(propActual))));
-                
             }
             if (evento.equals(fachada.eventos.altaTransito)) {
               
                 conexionNavegador.enviarJSON(
                     Respuesta.lista(
-                        new Respuesta("transitos", fachada.getInstancia().obtenerTransitoDTOs(propActual.getCedula())),
+                        new Respuesta("transitos", fachada.getInstancia().obtenerTransitoDTOs(propActual)),
                         new Respuesta("vehiculos", fachada.getInstancia().obtenerVehiculosDTO(propActual))
                     )
                 );   
@@ -99,7 +109,7 @@ public class ControladorMenuProp implements Observador{
             if(evento.equals(fachada.eventos.asignacionBoni)){
                  conexionNavegador.enviarJSON(
                     Respuesta.lista(
-                        new Respuesta("bonificaciones", fachada.getInstancia().AsignacionesDTO(propActual.getCedula()))
+                        new Respuesta("bonificaciones", fachada.getInstancia().AsignacionesDTO(propActual))
                     )
                 ); 
             }

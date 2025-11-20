@@ -14,6 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import uy.ort.disaps.obligatorio.DTOs.PuestoDTO;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOA;
 import uy.ort.disaps.obligatorio.DTOs.Mappers.PuestoMapper;
+import uy.ort.disaps.obligatorio.DTOs.Mappers.TransitoMapper;
 import uy.ort.disaps.obligatorio.DTOs.TransitoDTOP;
 import uy.ort.disaps.obligatorio.DTOs.VehiculoDTO;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
@@ -34,10 +35,7 @@ public class ServicioTransitos {
     private ArrayList<Tarifa> tarifas=new ArrayList<>();
     private ArrayList<Categoria> categorias=new ArrayList<>();
     private ArrayList<Vehiculo> vehiculos=new ArrayList<>();
-    private ArrayList<TransitoDTOP> transitoDTOs=new ArrayList<>();
     
-   
-
 
     public void agregarTransito(Transito t){
         transitos.add(t);
@@ -69,17 +67,19 @@ public class ServicioTransitos {
     public ArrayList<Vehiculo> getVehiculos(){
         return vehiculos;
     }
+
     public TransitoDTOA emularTransito(String puesto, String vehiculo, String fecha)  throws PeajeExcepcion, ParseException{
         Puesto p= buscarPuestoPorNombre(puesto);
         Vehiculo v= buscarVehiculoPorMat(vehiculo);
-        if (v==null) {
+        if (v==null)  
             throw new PeajeExcepcion("No existe el vehiculo");
-        }
+
         Date f=convertirFecha(fecha);
         Propietario prop= v.getPropietario();
-        if(!prop.puedeTransitar()) {
-            throw new PeajeExcepcion("El propietario del vehículo está"+ prop.getEstadoNombre() +", no puede realizar tránsitos");
-        }
+
+        if(!prop.puedeTransitar())
+             throw new PeajeExcepcion("El propietario del vehículo está "+ prop.getEstadoNombre() +", no puede realizar tránsitos");
+        
         boolean PasoHoy= yaPasoHoy(p, v, f);
         Bonificacion b= fachada.getInstancia().obtenerBonificacionPropietario(prop, p);
         Double monto= obtenerTarifa(p, v.getCategoria());
@@ -93,45 +93,36 @@ public class ServicioTransitos {
         else{
             boni="No se aplicaron bonificaciones";
         }
+        cobrarTransito(prop, p, monto, vehiculo, f);
+        Transito t= new Transito(f, v, p,monto,descuento, boni);
+        transitos.add(t);
+        TransitoDTOA dtoA= new TransitoDTOA(prop.getNombreCompleto(), prop.getEstadoNombre(),v.getCategoria().getNombre(), boni, String.valueOf(monto), String.valueOf(prop.getSaldoActual()));
+        fachada.getInstancia().avisar(fachada.eventos.edicionProp);
+        fachada.getInstancia().avisar(fachada.eventos.altaTransito);
+        return dtoA;
+    }
+
+    //Auxiliares
+    public void cobrarTransito(Propietario prop, Puesto p, double monto, String v, Date f) throws PeajeExcepcion{
+
         ResultadoCobro res= prop.cobrarTransito(monto);
         switch (res) {
             case SALDO_INSUFICIENTE:
                 throw new PeajeExcepcion("Saldo insuficiente.");
             case COBRO_OK_SALDO_MINIMO:
-                if(prop.recibeNotificaciones()){
-                    
-                    fachada.getInstancia().crearNotificacion(prop, "Tu saldo actual es de $ "+prop.getSaldoActual()  + "Te recomendamos hacer una recarga", f);
+                if(prop.recibeNotificaciones()){ 
+                    fachada.getInstancia().crearNotificacion(prop, "Pasaste por el "+ p.getNombre()+"-"+p.getDireccion() + "con el vehículo " + v, f);
+                    fachada.getInstancia().crearNotificacion(prop, "Tu saldo actual es de $ "+prop.getSaldoActual()  + "- Te recomendamos hacer una recarga", f);
                 }
                 break;
             case COBRO_OK:
                 if(prop.recibeNotificaciones()){
-                    fachada.getInstancia().crearNotificacion(prop, "Pasaste por el puesto"+ p.getNombre()+"-"+p.getDireccion() + "con el vehículo" + v.getMatricula(), f);
+                    fachada.getInstancia().crearNotificacion(prop, "Pasaste por el "+ p.getNombre()+"-"+p.getDireccion() + "con el vehículo " + v, f);
                 }
                 break;
         }
-      
-        Transito t= new Transito(f, v, p,monto);
-        transitos.add(t);
-        TransitoDTOP dtoP= new TransitoDTOP(prop.getCedula(), puesto,v.getMatricula(), v.getCategoria().getNombre(), String.valueOf(monto+descuento), boni,String.valueOf(monto), String.valueOf(prop.getSaldoActual()), fecha, String.valueOf(descuento));
-        TransitoDTOA dtoA= new TransitoDTOA(prop.getNombreCompleto(), prop.getEstadoNombre(),v.getCategoria().getNombre(), boni, String.valueOf(monto), String.valueOf(prop.getSaldoActual()));
-        transitoDTOs.add(dtoP);
-        fachada.getInstancia().avisar(fachada.eventos.edicionProp);
-        fachada.getInstancia().avisar(fachada.eventos.altaTransito);
-        return dtoA;
     }
-    public ArrayList<TransitoDTOP> getTransitos(int cedula){
-        ArrayList<TransitoDTOP> res = new ArrayList<>();
-
-        for (TransitoDTOP dto : this.transitoDTOs) {
-            if (dto.getCedula()==cedula) {
-                res.add(dto);
-            }
-        }
-
-    return res;
-
-    }
-
+     
     public boolean yaPasoHoy(Puesto puesto, Vehiculo vehiculo, Date fecha) {
 
         LocalDate fechaLocal = fecha.toInstant()
@@ -153,6 +144,41 @@ public class ServicioTransitos {
 
         return false;
     }
+    
+    public int transitosXV(String matricula) {
+        int contador = 0;
+        
+        for (Transito t : transitos) {
+            if (t.getVehiculo().getMatricula().equals(matricula)) {
+                contador++;
+            }
+        }
+        
+        return contador;
+    }
+    
+    public double totalTransitos(String matricula) {
+        double total = 0.0;
+        
+        for (Transito t : transitos) {
+            if (t.getVehiculo().getMatricula().equals(matricula)) {
+                total += t.getMontoF();  
+            }
+        }
+        
+        return total;
+    }
+
+    public double obtenerTarifa(Puesto p, Categoria c){
+        for(Tarifa t: p.getTarifas()){
+            if(t.getCategoria().equalsIgnoreCase(c.getNombre())){
+                 return t.getMonto();
+            }
+        }
+        return 0;
+    }
+
+    //Buscar
     public Puesto buscarPuestoPorNombre(String nombre) {
         for (Puesto p : puestos) {
             if (p.getNombre().equalsIgnoreCase(nombre)) {
@@ -161,6 +187,7 @@ public class ServicioTransitos {
         }
         return null;
     }
+    
     public Vehiculo buscarVehiculoPorMat(String matricula){
         for (Vehiculo v: vehiculos){
             if (v.getMatricula().equals(matricula)) {
@@ -169,9 +196,18 @@ public class ServicioTransitos {
         }
         return null;
     }
-    public Date convertirFecha(String fechaStr) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        return sdf.parse(fechaStr);
+
+    //DTOS
+    public ArrayList<TransitoDTOP> getTransitosDTO(Propietario prop){
+        ArrayList<Transito> trs = new ArrayList<>();
+        
+        for (Transito t : transitos) {
+            if (t.getVehiculo().getPropietario().equals(prop)) {
+                trs.add(t);
+            }
+        }
+        return TransitoMapper.fromTransito(trs);
+
     }
 
     public List<PuestoDTO> getPuestosDTOs(){
@@ -192,36 +228,14 @@ public class ServicioTransitos {
         return resultado;
     }
 
-    public double obtenerTarifa(Puesto p, Categoria c){
-        for(Tarifa t: p.getTarifas()){
-            if(t.getCategoria().equalsIgnoreCase(c.getNombre())){
-                 return t.getMonto();
-            }
-        }
-        return 0;
+
+    //Conversion fechas
+    public Date convertirFecha(String fechaStr) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        return sdf.parse(fechaStr);
     }
-    public int transitosXV(String matricula) {
-        int contador = 0;
-
-        for (Transito t : transitos) {
-            if (t.getVehiculo().getMatricula().equals(matricula)) {
-                contador++;
-            }
-        }
-
-        return contador;
+    public String  convertirDFecha(Date fecha) {
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        return isoFormat.format(fecha);
     }
-
-    public double totalTransitos(String matricula) {
-        double total = 0.0;
-
-        for (Transito t : transitos) {
-            if (t.getVehiculo().getMatricula().equals(matricula)) {
-                total += t.getTotal();  
-            }
-        }
-
-        return total;
-    }
-    
 }   

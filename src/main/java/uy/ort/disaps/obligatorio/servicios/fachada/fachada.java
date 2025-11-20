@@ -14,14 +14,19 @@ import uy.ort.disaps.obligatorio.DTOs.TransitoDTOP;
 import uy.ort.disaps.obligatorio.DTOs.VehiculoDTO;
 import uy.ort.disaps.obligatorio.DTOs.AsignacionBoniDTO;
 import uy.ort.disaps.obligatorio.DTOs.BoniDTO;
+import uy.ort.disaps.obligatorio.DTOs.EstadoDTO;
 import uy.ort.disaps.obligatorio.DTOs.NotificacionDTO;
 import uy.ort.disaps.obligatorio.dominio.Administrador;
 import uy.ort.disaps.obligatorio.dominio.AsignacionBonificacion;
 import uy.ort.disaps.obligatorio.dominio.Bonificacion;
+import uy.ort.disaps.obligatorio.dominio.Categoria;
+import uy.ort.disaps.obligatorio.dominio.EstadoPropietario;
 import uy.ort.disaps.obligatorio.dominio.Notificacion;
 import uy.ort.disaps.obligatorio.dominio.Propietario;
 import uy.ort.disaps.obligatorio.dominio.Puesto;
+import uy.ort.disaps.obligatorio.dominio.Tarifa;
 import uy.ort.disaps.obligatorio.dominio.Transito;
+import uy.ort.disaps.obligatorio.dominio.Vehiculo;
 import uy.ort.disaps.obligatorio.excepciones.PeajeExcepcion;
 import uy.ort.disaps.obligatorio.observador.Observable;
 import uy.ort.disaps.obligatorio.servicios.ServicioBonificaciones;
@@ -35,7 +40,8 @@ public class fachada extends Observable {
     private ServicioBonificaciones sBonificaciones;
     private ServicioTransitos sTransitos;
     private ServicioNotificaciones sNotificaciones;
-    public enum eventos{altaNoti, bajaNotis, edicionProp, altaTransito, asignacionBoni}
+
+    public enum eventos{Notificacion, edicionProp, altaTransito, asignacionBoni}
     
     private fachada() {
         sUsuarios = new ServicioUsuarios();
@@ -43,6 +49,7 @@ public class fachada extends Observable {
         sTransitos = new ServicioTransitos();
         sNotificaciones= new ServicioNotificaciones();
     }
+
     public static fachada getInstancia() {
         if (instancia == null) {
             instancia = new fachada();
@@ -53,25 +60,25 @@ public class fachada extends Observable {
     public void agregar(Propietario usuario) {
         sUsuarios.agregar(usuario);
     }
-    public void agregarAdministrador(uy.ort.disaps.obligatorio.dominio.Administrador adm) {
+    public void agregarAdministrador(Administrador adm) {
         sUsuarios.agregar(adm);
     }
-    public void agregarPuesto(uy.ort.disaps.obligatorio.dominio.Puesto puesto) {
+    public void agregarPuesto(Puesto puesto) {
         sTransitos.agregarPuesto(puesto);
     }
     public List<Puesto> obtenerPuestos(){
         return sTransitos.getPuestos();
     }
-    public void agregarCategoria(uy.ort.disaps.obligatorio.dominio.Categoria categoria) {
+    public void agregarCategoria(Categoria categoria) {
         sTransitos.agregarCategoria(categoria);
     }
-    public void agregarTarifa(uy.ort.disaps.obligatorio.dominio.Tarifa tarifa) {
+    public void agregarTarifa(Tarifa tarifa) {
         sTransitos.agregarTarifa(tarifa);
     }   
-    public void agregarVehiculo(uy.ort.disaps.obligatorio.dominio.Vehiculo vehiculo) {
+    public void agregarVehiculo(Vehiculo vehiculo) {
         sTransitos.agregarVehiculo(vehiculo);
     }   
-    public void agregarBonificacion(uy.ort.disaps.obligatorio.dominio.Bonificacion bonificacion) {
+    public void agregarBonificacion(Bonificacion bonificacion) {
         sBonificaciones.agregarBonificacion(bonificacion);
     }
     public void agregarBoniAsignada(AsignacionBonificacion ba){
@@ -97,12 +104,10 @@ public class fachada extends Observable {
     public TransitoDTOA emularTransito(String matricula, String Puesto, String fechaHora) throws PeajeExcepcion, ParseException{
         return sTransitos.emularTransito(Puesto, matricula, fechaHora);
     }
-    public ArrayList<TransitoDTOP> obtenerTransitoDTOs(int cedula){
-        return sTransitos.getTransitos(cedula);
+    public ArrayList<TransitoDTOP> obtenerTransitoDTOs(Propietario p){
+        return sTransitos.getTransitosDTO(p);
     }
-    public PropietarioDto obtenerDTOProp(String nombre, String estado, double saldo){
-        return sUsuarios.nuevoDTOProp(nombre, estado, saldo);
-    }
+    
     public List<VehiculoDTO> obtenerVehiculosDTO(Propietario propActual) {
        return sTransitos.obtenerVDtosXProp(propActual);
     }
@@ -117,22 +122,42 @@ public class fachada extends Observable {
         
         return sBonificaciones.getBonisDTOs();
     }
-    public PropietarioDto obtenerProp(String cedula) throws PeajeExcepcion{
-        return sUsuarios.PropietarioDTOCompleto(cedula);
+    public PropietarioDto obtenerPropDTO(Propietario p) throws PeajeExcepcion{
+        return sUsuarios.PropietarioDTOCompleto(p);
     }
-    public List<AsignacionBonificacion> obtenerBAsignadas(int cedulaN) {
-        return sBonificaciones.getAsignadas(cedulaN);
-    }
-    public void asignarBonificacion(String bonificacion, String puesto, String cedula) throws PeajeExcepcion {
-         sBonificaciones.asignarBoni(bonificacion,puesto,cedula);
+  
+    public void asignarBonificacion(String bonificacion, String puesto, Propietario prop) throws PeajeExcepcion {
+         sBonificaciones.asignarBoni(bonificacion,puesto,prop);
     }
      public Puesto obtenerPuesto(String puesto) {
        return sTransitos.buscarPuestoPorNombre(puesto);
     }
-    public Propietario obtenerProp(int cedula){
+    public Propietario obtenerProp(int cedula) throws PeajeExcepcion {
         return sUsuarios.buscarPropietarioPorCedula(cedula);
     }
-    public ArrayList<AsignacionBoniDTO> AsignacionesDTO(int cedulaN) {
-       return sBonificaciones.asignacionesDTOs(cedulaN);
+    public ArrayList<AsignacionBoniDTO> AsignacionesDTO(Propietario p) {
+       return sBonificaciones.asignacionesDTOs(p);
+    }
+    public void eliminarNotis(Propietario propActual)throws PeajeExcepcion {
+        sNotificaciones.eliminarNotis(propActual);
+    }
+
+    public List<EstadoPropietario> obtenerEstados() {
+        return sUsuarios.getEstadosDisponibles();
+    }
+    public List<EstadoDTO> obtenerEstadoDTOs(List<EstadoPropietario> estados){
+        return sUsuarios.estadosDTO(estados);
+    }
+
+    public String convertirDFecha(Date fecha) {
+        return sTransitos.convertirDFecha(fecha);
+    }
+
+    public Double totalTransitos(String matricula) {
+        return sTransitos.totalTransitos(matricula);
+    }
+
+    public int transitosXV(String matricula) {
+        return sTransitos.transitosXV(matricula);
     }
 }

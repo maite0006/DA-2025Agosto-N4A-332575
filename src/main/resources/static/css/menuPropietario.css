@@ -69,7 +69,12 @@ body {
   font-size: 1rem;
   margin-top: 5px;
 }
-
+.grid-bonificacion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
 /* Two-column cards */
 .grid-2 {
   display: grid;
